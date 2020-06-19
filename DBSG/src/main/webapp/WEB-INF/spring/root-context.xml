@@ -4,5 +4,34 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
-		
+	
+	<!-- DataSource 설정 -->
+	<!-- 데이터베이스 접속을 위한 정보 설정 -->
+	 <!-- MySQL dataSource -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> 
+        <!-- 사용할 데이터베이스 종류 -->
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/> 
+        <!-- 접속할 데이터베이스 경로 -->
+        <property name="url" 
+        	value="jdbc:mysql://ec2-15-165-205-186.ap-northeast-2.compute.amazonaws.com:3306/dbsgdb?useSSL=false&amp;serverTimezone=Asia/Seoul&amp;characterEncoding=utf-8"/>
+        <!-- 접속할 계정 이름과 비밀번호 -->
+        <property name="username" value="dbsg"/> 
+        <property name="password" value="dbsg1234"/>
+    </bean>
+	
+	<!-- 설정 정보 갖는 애 -->
+	<bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sqlSessionFactory">
+		<property name="dataSource" ref="dataSource" />
+		<property value="classpath:/mybatis/mybatis-config.xml" name="configLocation" />
+		<property value="classpath:/mybatis/mappers/*.xml" name="mapperLocations" />
+	</bean>
+	<!-- 실행하는 애  -->
+	<bean class="org.mybatis.spring.SqlSessionTemplate" id="sqlSession" destroy-method="clearCache">
+		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<!-- 스프링에서 트랜잭션 처리 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
 </beans>
