@@ -32,11 +32,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</insert>
 	
 	<!-- 전체 메뉴 조회 -->
-	<select id="menuList" resultType="Menu">
+	<!-- 메뉴 번호, 메뉴 이름, 메뉴 이미지, 메뉴 설명, 필요 재료, 메뉴 평점, 메뉴 태그, 예상 조리시간, 작성자, 즐찾수, 조회수 -->
+	<select id="menuList" resultType="MenuDisplay">
 		select m1.menu_no,m1.menu_name,m1.menu_image,m1.menu_description,m1.menu_reqMaterial,m2.menu_star,
 		m1.menu_tag,m1.menu_totalTime,m1.menu_writer,m2.menu_preferCnt,m2.menu_readCnt
 		from menu m1,menu_stat m2
 		where m1.menu_no=m2.menu_no and m1.menu_delete=0
 	</select>
 	
+	<!-- 문자열로 메뉴 조회 -->
+	<select id="searchMenuByString" resultType="MenuDisplay" parameterType="java.lang.String">
+		select m1.menu_no,m1.menu_name,m1.menu_image,m1.menu_description,m1.menu_reqMaterial,m2.menu_star,
+		m1.menu_tag,m1.menu_totalTime,m1.menu_writer,m2.menu_preferCnt,m2.menu_readCnt
+		from menu m1,menu_stat m2
+		where m1.menu_no=m2.menu_no and m1.menu_delete=0 and m1.menu_name like #{menu_name}
+	</select>
+	
+	<!-- 태그로 메뉴 조회 -->
+	<select id="searchMenuByTag" parameterType="java.lang.String" resultType="MenuDisplay">
+		select m1.menu_no,m1.menu_name,m1.menu_image,m1.menu_description,m1.menu_reqMaterial,m2.menu_star,
+		m1.menu_tag,m1.menu_totalTime,m1.menu_writer,m2.menu_preferCnt,m2.menu_readCnt
+		from menu m1,menu_stat m2
+		where m1.menu_no=m2.menu_no and m1.menu_delete=0 and m1.menu_tag like #{tag}
+	</select>
 </mapper>

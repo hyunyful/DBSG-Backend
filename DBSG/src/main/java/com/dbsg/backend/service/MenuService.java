@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.dbsg.backend.domain.Menu;
+import com.dbsg.backend.domain.MenuDisplay;
 
 public interface MenuService {
 
@@ -11,13 +12,13 @@ public interface MenuService {
 	public boolean menuInsert(Map<String,Object> param);
 	
 	//전체 메뉴 조회
-	public List<Menu> menuList();
+	public List<MenuDisplay> menuList();
 	
 	//문자열로 메뉴 검색
-	public List<Menu> menuStringSearch(String keyword);
+	public List<MenuDisplay> searchMenuByString(String keyword);
 	
 	//태그로 메뉴 검색
-	public List<Menu> menuTagSearch(int tagNo);
+	public List<MenuDisplay> searchMenuByTag(int tagNo);
 	
 	//테스트
 	public boolean test(String menu_name);

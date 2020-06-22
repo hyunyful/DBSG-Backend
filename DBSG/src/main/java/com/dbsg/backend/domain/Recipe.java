@@ -2,12 +2,12 @@ package com.dbsg.backend.domain;
 
 public class Recipe {
  
-	 private Integer recipe_no;
-	 private Integer menu_no;
-	 private Integer recipe_processNo;
+	 private int recipe_no;
+	 private int menu_no;
+	 private int recipe_processNo;
 	 private String recipe_action;
-	 private Integer recipe_fire;
-	 private Integer recipe_reqTime;
+	 private int recipe_fire;
+	 private int recipe_reqTime;
 	 private String recipe_image;
 	 private String etc;
 	 

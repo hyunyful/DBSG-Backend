@@ -12,7 +12,7 @@ public class Menu {
 	 private String menu_description;
 	 private String menu_image;
 	 private String menu_kids;
-	 private Integer menu_totalTime;
+	 private int menu_totalTime;
 	 private int menu_delete;
 	 private float menu_star;
 	 private int menu_preferCnt;

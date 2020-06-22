@@ -1,6 +1,7 @@
 package com.dbsg.backend.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.dbsg.backend.dao.MenuDao;
 import com.dbsg.backend.domain.Menu;
+import com.dbsg.backend.domain.MenuDisplay;
 import com.dbsg.backend.domain.Recipe;
 
 @Service
@@ -191,8 +193,8 @@ public class MenuServiceImpl implements MenuService {
 
 	//전체 메뉴 조회
 	@Override
-	public List<Menu> menuList() {
-		List<Menu> list = new ArrayList<>();
+	public List<MenuDisplay> menuList() {
+		List<MenuDisplay> list = new ArrayList<>();
 		
 		list = menuDao.menuList();
 		
@@ -201,16 +203,75 @@ public class MenuServiceImpl implements MenuService {
 
 	//문자열로 메뉴 검색
 	@Override
-	public List<Menu> menuStringSearch(String keyword) {
-		List<Menu> list = new ArrayList<>();
+	public List<MenuDisplay> searchMenuByString(String keyword) {
+		List<MenuDisplay> list = new ArrayList<>();
+		
+		//받아온 keyword를 like 구문에 맞춰서 바꾸고 dao에 넣기
+		//keyword에 있는 공백 무시, 특수문자 무시
+		
+		//일단 공백 무시만
+		keyword = keyword.replace(" ", "");
+		System.out.println("가공된 1차 keyword는 "+keyword);
+		
+		//like 구문에 맞게 모양 내기
+		String menu_name = "%"+keyword+"%";
+		System.out.println("최종 db에 들어갈 값은 "+menu_name);
+		
+		//dao에 넣기
+		list = menuDao.searchMenuByString(menu_name);
 		
 		return list;
 	}
 
 	//태그로 메뉴 검색
 	@Override
-	public List<Menu> menuTagSearch(int tagNo) {
-		List<Menu> list = new ArrayList<>();
+	public List<MenuDisplay> searchMenuByTag(int tagNo) {
+		List<MenuDisplay> list = new ArrayList<>();
+		
+		//System.out.println("처음 온 tagNo는 "+tagNo);
+		
+		//1.태그 번호를 like에 맞는 형식으로 변환해서 결과를 받아온다
+		//2.menu_tag를 int 배열에 , 를 구분자로 구분해서 저장
+		//3.int 배열을 돌면서 tagNo와 같은 숫자가 있는 menu_tag의 메뉴만 list에 저장해서 리턴
+		
+		//1.tagNo를 형식에 맞게 바꿔서 dao에 넣기
+		
+		//형식 맞추기
+		String tag = "%"+tagNo+"%"; 
+		//System.out.println("dao에 들어갈 모양은 "+tag);
+		
+		//dao 넣기
+		List<MenuDisplay> tempList = menuDao.searchMenuByTag(tag);
+		
+		//만약 찾아온 데이터가 없으면 그냥 리턴
+		if(tempList == null) {
+			return list;
+		}
+		//찾아온 데이터가 있으면
+		else if(tempList != null) {
+			//2.tempList를 돌면서 menu_tag를 빼서 int 배열에 넣은 후 tagNo과 비교
+			
+			//tempList를 돌면서
+			for(MenuDisplay tempMD:tempList) {
+				//menu_tag 가져오기
+				String menu_tag = tempMD.getMenu_tag();
+				
+				//menu_tag를 , 로 구분해서 String 배열에 담기
+				String[] tempTags = menu_tag.split(",");
+				
+				//tempTags 배열을 int 배열로 변경
+				int[] tags = Arrays.stream(tempTags).mapToInt(Integer::parseInt).toArray();
+				
+				//다시 tags 배열을 돌면서 tagNo와 일치하는 수가 있는지 확인
+				for(int i=0;i<tags.length;i++) {
+					
+					//일치하는게 있으면 해당 MenuDisplay 변수(tempMD)를 list에 넣기
+					if(tagNo == tags[i]) {
+						list.add(tempMD);
+					}
+				}
+			}
+		}
 		
 		return list;
 	}

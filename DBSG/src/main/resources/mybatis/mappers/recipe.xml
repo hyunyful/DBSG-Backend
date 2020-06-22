@@ -3,5 +3,12 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="recipe">
-	
+
+	<!-- 해당 메뉴의 전체 레시피 보기 -->
+	<select id="showRecipe" parameterType="java.lang.Integer" resultType="Recipe">
+		select *
+		from recipe
+		where menu_no = #{menu_no}
+	</select>
+
 </mapper>
