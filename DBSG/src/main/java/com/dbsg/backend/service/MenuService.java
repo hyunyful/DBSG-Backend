@@ -20,7 +20,4 @@ public interface MenuService {
 	//태그로 메뉴 검색
 	public List<MenuDisplay> searchMenuByTag(int tagNo);
 	
-	//테스트
-	public boolean test(String menu_name);
-	
 }

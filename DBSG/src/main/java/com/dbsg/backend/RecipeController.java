@@ -1,5 +1,6 @@
 package com.dbsg.backend;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dbsg.backend.domain.MenuDisplay;
 import com.dbsg.backend.domain.Recipe;
 import com.dbsg.backend.service.RecipeService;
 
@@ -26,11 +28,19 @@ public class RecipeController {
 		Map<String,Object> map = new HashMap<>();
 		map.put("connect", "true");
 		
-		List<Recipe> list = recipeService.showRecipe(menu_no);
+		List<Recipe> list = new ArrayList<>();
+		
+		try {
+			list = recipeService.showRecipe(menu_no);
+		}catch(Exception e) {
+			e.printStackTrace();
+			map.put("recipe", "error");
+			return map;
+		}
+		
 		map.put("size", list.size());
 		
 		if(list.size() == 0) {
-			
 			map.put("recipe", "empty");
 		}else {
 			map.put("recipe", list);

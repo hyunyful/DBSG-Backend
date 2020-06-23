@@ -1,5 +1,6 @@
 package com.dbsg.backend;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,14 @@ public class MenuController {
 		Map<String,Object> map = new HashMap<>();
 		map.put("connect", "true");
 		
-		boolean result = menuService.menuInsert(param);
+		boolean result = false;
+		
+		try {
+			result = menuService.menuInsert(param);
+		}catch(Exception e) {
+			e.printStackTrace();
+			map.put("menuInsert", "error");
+		}
 		
 		//System.out.println("controller "+result);
 		
@@ -47,14 +55,23 @@ public class MenuController {
 	@GetMapping("/list")
 	public Map<String,Object> menuList(){
 		Map<String,Object> map = new HashMap<>();
-		map.put("connect", "true");
+		map.put("connection", "success");
 		
-		List<MenuDisplay> list = menuService.menuList();
+		List<MenuDisplay> list = new ArrayList<>();
+		
+		try {
+			list = menuService.menuList();
+		}catch(Exception e) {
+			e.printStackTrace();
+			map.put("menuList", "error");
+			return map;
+		}
+		
 		map.put("size", list.size());
 		
-		if(list == null) {
+		if(list.size() == 0) {
 			map.put("menuList", "empty");
-		}else if(list != null) {
+		}else {
 			map.put("menuList", list);
 		}
 		
@@ -67,13 +84,22 @@ public class MenuController {
 		Map<String,Object> map = new HashMap<>();
 		map.put("connect", "true");
 		
-		List<MenuDisplay> list = menuService.searchMenuByString(keyword);
+		List<MenuDisplay> list = new ArrayList<>();
+		
+		try {
+			list = menuService.searchMenuByString(keyword);
+		}catch(Exception e) {
+			e.printStackTrace();
+			map.put("menuList", "error");
+			return map;
+		}
+		
 		map.put("size", list.size());
 		
-		if(list == null) {
-			map.put("menuSearch", "empty");
+		if(list.size() == 0) {
+			map.put("menuList", "empty");
 		}else {
-			map.put("menuSearch", list);
+			map.put("menuList", list);
 		}
 		
 		return map;
@@ -85,25 +111,23 @@ public class MenuController {
 		Map<String,Object> map = new HashMap<>();
 		map.put("connect", "true");
 		
-		List<MenuDisplay> list = menuService.searchMenuByTag(tagNo);
-		map.put("size", list.size());
+		List<MenuDisplay> list = new ArrayList<>();
 		
-		if(list == null) {
-			map.put("tagSearch", "empty");
-		}else{
-			map.put("tagSearch", list);
+		try {
+			list = menuService.searchMenuByTag(tagNo);
+		}catch(Exception e) {
+			e.printStackTrace();
+			map.put("menuList", "error");
+			return map;
 		}
 		
-		return map;
-	}
-
-	//이것저것 테스트 해볼 메소드
-	@GetMapping("/test/{menu_name}")
-	public Map<String,Object> test(@PathVariable String menu_name){
-		Map<String,Object> map = new HashMap<>();
-		map.put("test", "success");
+		map.put("size", list.size());
 		
-		menuService.test(menu_name);
+		if(list.size() == 0) {
+			map.put("menuList", "empty");
+		}else {
+			map.put("menuList", list);
+		}
 		
 		return map;
 	}

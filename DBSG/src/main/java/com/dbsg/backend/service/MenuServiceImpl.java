@@ -211,11 +211,11 @@ public class MenuServiceImpl implements MenuService {
 		
 		//일단 공백 무시만
 		keyword = keyword.replace(" ", "");
-		System.out.println("가공된 1차 keyword는 "+keyword);
+		//System.out.println("가공된 1차 keyword는 "+keyword);
 		
 		//like 구문에 맞게 모양 내기
 		String menu_name = "%"+keyword+"%";
-		System.out.println("최종 db에 들어갈 값은 "+menu_name);
+		//System.out.println("최종 db에 들어갈 값은 "+menu_name);
 		
 		//dao에 넣기
 		list = menuDao.searchMenuByString(menu_name);
@@ -276,20 +276,4 @@ public class MenuServiceImpl implements MenuService {
 		return list;
 	}
 
-	//테스트
-	@Override
-	public boolean test(String menu_name) {
-		boolean result = false;
-		
-		Integer menu_no = menuDao.findNobyName(menu_name);
-		System.out.println(menu_no);
-		if(menu_no == null) {
-			System.err.println("해당하는 메뉴 번호가 없어영 ㅠㅠ");
-			menu_no = 0;
-		}
-		System.out.println(menu_no);
-		
-		
-		return result;
-	}
 }
