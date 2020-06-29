@@ -26,25 +26,22 @@ public class RecipeController {
 	@GetMapping("/{menu_no}")
 	public Map<String,Object> showRecipe(@PathVariable int menu_no){
 		Map<String,Object> map = new HashMap<>();
-		map.put("connect", "true");
-		
 		List<Recipe> list = new ArrayList<>();
+		
+		map.put("con", "success");
 		
 		try {
 			list = recipeService.showRecipe(menu_no);
 		}catch(Exception e) {
 			e.printStackTrace();
-			map.put("recipe", "error");
+			map.put("recipe", "fail");
+			map.put("error", e.getMessage());
 			return map;
 		}
 		
+		map.put("recipe", "success");
 		map.put("size", list.size());
-		
-		if(list.size() == 0) {
-			map.put("recipe", "empty");
-		}else {
-			map.put("recipe", list);
-		}
+		map.put("data", list);
 		
 		return map;
 	}

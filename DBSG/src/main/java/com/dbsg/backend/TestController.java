@@ -22,7 +22,27 @@ public class TestController {
 	
 	@Autowired
 	private UserDao userDao;
-
+	
+	@GetMapping
+	public Map<String,Object> getTest1(){
+		Map<String,Object> map = new HashMap<>();
+		
+		Map<String,Object> infoMap = new HashMap<>();
+		Map<String,Object> dataMap = new HashMap<>();
+		
+		infoMap.put("이름", "최서현");
+		infoMap.put("나이", "27");
+		
+		dataMap.put("1", "data1");
+		dataMap.put("2", "data2");
+		dataMap.put("3", "data3");
+		
+		map.put("info", infoMap);
+		map.put("data", dataMap);
+		
+		return map;
+	}
+	
 	
 	@PostMapping
 	public Map<String,Object> postTest1(@RequestBody Map<String,Object> param){

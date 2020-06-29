@@ -40,6 +40,7 @@ public class UserController {
 		if(tokenError == null) {
 			//사용자 정보 요청하기
 			Map<String,Object> infoMap = userService.getUserInfo(accessToken);
+			
 			String infoError = (String) infoMap.get("error");
 			//System.out.println("controller에서 infoE는 "+infoE);
 			String result = (String) infoMap.get("result");
@@ -59,26 +60,29 @@ public class UserController {
 				//회원정보 작업
 				Map<String,Object> userMap = userService.join(user);
 				
+				//msg에 회원정보 작업의 결과가 담겨있음
 				String msg = (String) userMap.get("msg");
 				
 				//error가 있으면
 				if("error".equals(msg)) {
-					map.put("result", msg);
+					map.put("data", msg);
 					
 					return map;
 				}
-				//msg가 있으면
+				//msg가 needNickname이면
 				else if("needNickname".equals(msg)) {
+					//user_no 랑 같이 리턴
+					//해당 유저 번호 다시 보내달라고..
 					int no = (int) userMap.get("user_no");
 				
 					//System.out.println("controller : "+no);
 					
-					map.put("result", msg);
+					map.put("data", msg);
 					map.put("user_no", no);
 					
 					return map;
 				}
-				//user_no가 있으면
+				//해당 회원의 정보가 있으면
 				else if("exist".equals(msg)){
 					
 					UserDisplay ud = (UserDisplay) userMap.get("ud");
@@ -87,7 +91,7 @@ public class UserController {
 					//user_no로 회원정보 찾아서 리턴
 					UserDisplay userInfo = userService.findInfoByNo(user_no);
 					
-					map.put("userInfo", userInfo);
+					map.put("data", userInfo);
 				}
 			}
 		}
