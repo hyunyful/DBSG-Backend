@@ -84,6 +84,7 @@ public class MenuController {
 		List<MenuDisplay> list = new ArrayList<>();
 		
 		map.put("con", "success");
+		map.put("keyword", keyword);
 		
 		try {
 			list = menuService.searchMenuByString(keyword);
@@ -108,6 +109,7 @@ public class MenuController {
 		List<MenuDisplay> list = new ArrayList<>();
 		
 		map.put("con", "success");
+		map.put("keyword", tagNo);
 		
 		try {
 			list = menuService.searchMenuByTag(tagNo);

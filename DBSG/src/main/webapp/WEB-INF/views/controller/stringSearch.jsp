@@ -8,9 +8,15 @@
 </head>
 <body>
 
+<h1>요청 주소 : /menu/search/{검색어} (get)</h1>
+
 <p>
-<b>요청 주소 : /menu/search/{검색어} (get)</b><br><br>
-<b>리턴 값 정보</b><br><img src="">
+<b>리턴 값 정보</b><br><img src="/resources/controllerImage/stringSearch/info.PNG">
+<br><br>
+<b>성공</b><br>
+데이터가 존재하는 경우<br><img src="/resources/controllerImage/stringSearch/success1.PNG"><br>
+데이터가 존재하지 않는 경우<br><img src="/resources/controllerImage/stringSearch/success2.PNG">
+
 </p>
 
 </body>

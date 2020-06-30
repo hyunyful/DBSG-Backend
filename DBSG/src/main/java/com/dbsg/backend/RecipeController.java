@@ -29,6 +29,7 @@ public class RecipeController {
 		List<Recipe> list = new ArrayList<>();
 		
 		map.put("con", "success");
+		map.put("keyword", menu_no);
 		
 		try {
 			list = recipeService.showRecipe(menu_no);

@@ -28,6 +28,8 @@ public class UserController {
 	public Map<String,Object> kakaoLogin(@RequestParam("code") String code){
 		Map<String,Object> map = new HashMap<>();
 		
+		map.put("con", "success");
+		
 		//System.out.println("접근 성공~ code는 "+code);
 		Map<String,Object> tokenMap = userService.getAccessToken(code);
 		
@@ -65,7 +67,8 @@ public class UserController {
 				
 				//error가 있으면
 				if("error".equals(msg)) {
-					map.put("data", msg);
+					map.put("data", "error");
+					map.put("error", msg);
 					
 					return map;
 				}
@@ -91,7 +94,8 @@ public class UserController {
 					//user_no로 회원정보 찾아서 리턴
 					UserDisplay userInfo = userService.findInfoByNo(user_no);
 					
-					map.put("data", userInfo);
+					map.put("user_info", userInfo);
+					map.put("data", msg);
 				}
 			}
 		}
@@ -110,7 +114,7 @@ public class UserController {
 	@PostMapping("/nicknameCheck")
 	public Map<String,Object> nicknameCheck(@RequestBody Map<String,Object> param){
 		Map<String,Object> map = new HashMap<>();
-		map.put("connect", "true");
+		map.put("con", "success");
 		
 		boolean result = userService.nicknameCheck(param);
 		
@@ -123,11 +127,29 @@ public class UserController {
 	@PostMapping("/nickname")
 	public Map<String,Object> setNickname(@RequestBody Map<String,Object> param){
 		Map<String,Object> map = new HashMap<>();
-		map.put("connect", "success");
+		map.put("con", "success");
 		
-		Map<String,Object> result = userService.setNickname(param);
+		Map<String,Object> user_info = userService.setNickname(param);
 		
-		map.put("result", result);
+		String sendNickname = (String) user_info.get("sendNickname");
+		int sendUser_no = (int) user_info.get("sendUser_no");
+		String result = (String) user_info.get("result");
+		
+		map.put("sendNickname", sendNickname);
+		map.put("sendUser_no", sendUser_no);
+		
+		//닉네임 설정에 성공한 경우
+		if(result == "success") {
+			//성공했다고 전송
+			map.put("data", result);
+			//map 안에 있는 회원정보 전송
+			UserDisplay info = (UserDisplay) user_info.get("ud");
+			map.put("user_info", info);
+		}
+		//닉네임 설정에 실패한 경우
+		else if(result == "fail") {
+			map.put("data", result);
+		}
 		
 		return map;
 	}

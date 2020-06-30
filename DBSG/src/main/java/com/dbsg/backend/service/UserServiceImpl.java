@@ -119,12 +119,14 @@ public class UserServiceImpl implements UserService {
 			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
-			error = "URL 만들기에 실패링";
+			System.out.println("URL 만들기에 실패링");
+			error = e.getMessage();
 			map.put("error", error);
 			return map;
 		} catch (IOException e) {
 			e.printStackTrace();
-			error = "URLConnection에 실패링";
+			System.out.println("URLConnection에 실패링");
+			error = e.getMessage();
 			map.put("error", error);
 			return map;
 		}
@@ -366,11 +368,14 @@ public class UserServiceImpl implements UserService {
 		
 		//정보 추출
 		String nickname = data.getString("nickname");
-		int no = Integer.parseInt(data.getString("no"));
+		int user_no = Integer.parseInt(data.getString("user_no"));
+		
+		map.put("sendNickname", nickname);
+		map.put("sendUser_no", user_no);
 		
 		User user = new User();
 		user.setUser_nickname(nickname);
-		user.setUser_no(no);
+		user.setUser_no(user_no);
 		
 		try {
 			
@@ -385,7 +390,7 @@ public class UserServiceImpl implements UserService {
 				//System.out.println("성공쓰");
 				
 				//회원번호로 해당 회원 정보 불러오기
-				UserDisplay ud = userDao.findInfoByNo(no);
+				UserDisplay ud = userDao.findInfoByNo(user_no);
 				
 				//회원이 있으면
 				if(ud != null) {

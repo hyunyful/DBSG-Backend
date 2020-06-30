@@ -8,8 +8,9 @@
 </head>
 <body>
 
+<h1>요청 주소 : /menu/list (get)</h1>
+
 <p>
-<b>요청 주소 : /menu/list (get)</b><br><br>
 <b>리턴 값 정보</b><br><img src="/resources/controllerImage/menuList/info.PNG">
 <br><br>
 <b>성공</b><br><img src="/resources/controllerImage/menuList/success.PNG">

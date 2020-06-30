@@ -37,6 +37,9 @@ public class HomeController {
 		return "home";
 	}
 	
+	
+	/* 컨트롤러 정보 페이지 관련 메소드들 */
+	
 	@GetMapping("/controller")
 	public String Controller() {
 		
@@ -59,6 +62,42 @@ public class HomeController {
 	public String stringSearchInfo() {
 		
 		return "/controller/stringSearch";
+	}
+	
+	@GetMapping("/controller/tagSearch")
+	public String tagSearchInfo() {
+		
+		return "/controller/tagSearch";
+	}
+	
+	@GetMapping("/controller/showRecipe")
+	public String showRecipeInfo() {
+		
+		return "/controller/showRecipe";
+	}
+	
+	@GetMapping("/controller/login/kakao")
+	public String kakaoLoginInfo() {
+		
+		return "/controller/kakaoLogin";
+	}
+	
+	@GetMapping("/controller/setNickname")
+	public String setNicknameInfo() {
+		
+		return "/controller/setNickname";
+	}
+	
+	@GetMapping("/controller/login/naver")
+	public String naverLoginInfo() {
+		
+		return "/controller/naverLogin";
+	}
+	
+	@GetMapping("/controller/login/google")
+	public String googleLoginInfo() {
+		
+		return "/controller/googleLogin";
 	}
 	
 }
