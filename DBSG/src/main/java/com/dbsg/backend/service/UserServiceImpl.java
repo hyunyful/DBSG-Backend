@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
 				//access_token 값을 map에 담아서 리턴
 				accessToken = data.getString("access_token");
 				
-				System.out.println("accessToken는 "+accessToken);
+				//System.out.println("accessToken는 "+accessToken);
 				
 				map.put("accessToken", accessToken);
 				
@@ -155,7 +155,6 @@ public class UserServiceImpl implements UserService {
 			con.setRequestMethod("GET");
 			con.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 			con.setRequestProperty("Authorization","Bearer "+accessToken);
-			//con.setRequestProperty("Accept", "application/json");
 			
 			con.connect();
 			
@@ -195,26 +194,58 @@ public class UserServiceImpl implements UserService {
 				JSONObject kakao_account = data.getJSONObject("kakao_account");
 				JSONObject properties = data.getJSONObject("properties");
 				
-				//System.out.println("data는 "+data);
+				//필요한 사용자 정보
+				String profile_image = "";		//프로필 사진 url 정보
+				String email = "";					//이메일
+				String age_range = "";			//연령대
+				String birthday = "";				//생일
+				String gender = "";				//성별
+				int user_gender = 0;				//gender가 male이면 user_gender는 1, female이면 user_gender는 2
 				
-				//필요한 사용자 정보 추출
-				//프로필 사진 url 정보
-				String profile_image = properties.getString("profile_image");
-				//이메일
-				String email = kakao_account.getString("email");
+				//정보 추출할 때 해당 키가 없는 경우를 대비한 에러처리
+				//없으면 기본값 할당
+				
+				//profile_image가 있으면
+				if(properties.has("profile_image")) {
+					profile_image = properties.getString("profile_image");
+				}else {			//profile_image가 없으면 
+					profile_image = "default.png";
+				}
+				
+				//이메일이 있으면
+				if(kakao_account.has("email")) {
+					email = kakao_account.getString("email");
+				}else {			//없으면
+					email = "";
+				}
+				
 				//연령대
-				String age_range = kakao_account.getString("age_range");
+				if(kakao_account.has("age_range")) {
+					age_range = kakao_account.getString("age_range");
+				}else {
+					age_range = "";
+				}
+
 				//생일
-				String birthday = kakao_account.getString("birthday");
+				if(kakao_account.has("birthday")) {
+					birthday = kakao_account.getString("birthday");
+				}else {
+					birthday = "";
+				}
+
 				//성별
-				String gender = kakao_account.getString("gender");
-				int user_gender = 0;
-				
-				//성별이 male이면 1 female이면 2
-				if("male".equals(gender)) {
-					user_gender = 1;
-				}else if("female".equals(gender)) {
-					user_gender = 2;
+				if(kakao_account.has("gender")) {
+					gender = kakao_account.getString("gender");
+					
+					//gender가 male이면 1 female이면 2
+					if("male".equals(gender)) {
+						user_gender = 1;
+					}else if("female".equals(gender)) {
+						user_gender = 2;
+					}
+					
+				}else {
+					user_gender = 0;
 				}
 				
 				//사용자 정보를 User 객체에 담아서 리턴
@@ -260,7 +291,7 @@ public class UserServiceImpl implements UserService {
 	public Map<String,Object> join(User user) {		
 		Map<String,Object> map = new HashMap<>();
 		
-		String result = "";
+		String result = "";			//exist, needNickname, error 중 하나를 저장할 변수
 		
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition(); 
 		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
@@ -286,11 +317,12 @@ public class UserServiceImpl implements UserService {
 			//회원이 있으면
 			if(ud != null) {
 				//System.out.println("회원 정보가 있네");
-				
-				//2.해당 회원의 user_no을 문자열로 리턴
+			
 				result = "exist";
 				
+				//있다는 말과 함께
 				map.put("msg", result);
+				//회원 정보 보내주기
 				map.put("ud", ud);
 				
 				tm.commit(status);
@@ -375,9 +407,21 @@ public class UserServiceImpl implements UserService {
 		//json 파싱
 		JSONObject data = new JSONObject(param);
 		
+		String nickname = "";
+		int user_no = 0;
+		
 		//정보 추출
-		String nickname = data.getString("nickname");
-		int user_no = Integer.parseInt(data.getString("user_no"));
+		if(data.has("nickname")) {
+			nickname = data.getString("nickname");
+		}else {
+			nickname = "";
+		}
+		
+		if(data.has("user_no")) {
+			user_no = Integer.parseInt(data.getString("user_no"));
+		}else {
+			user_no = 0;
+		}
 		
 		map.put("sendNickname", nickname);
 		map.put("sendUser_no", user_no);
