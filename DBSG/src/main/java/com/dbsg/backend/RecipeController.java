@@ -16,14 +16,13 @@ import com.dbsg.backend.domain.Recipe;
 import com.dbsg.backend.service.RecipeService;
 
 @RestController
-@RequestMapping("/recipe")
 public class RecipeController {
 	
 	@Autowired
 	private RecipeService recipeService;
 
 	//해당 메뉴의 전체 레시피 조회
-	@GetMapping("/{menu_no}")
+	@GetMapping("/recipe/{menu_no}")
 	public Map<String,Object> showRecipe(@PathVariable int menu_no){
 		Map<String,Object> map = new HashMap<>();
 		List<Recipe> list = new ArrayList<>();

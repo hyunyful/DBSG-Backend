@@ -16,7 +16,6 @@ import com.dbsg.backend.domain.UserDisplay;
 import com.dbsg.backend.service.UserService;
 
 @RestController
-@RequestMapping("/user")
 public class UserController {
 	
 	@Autowired
@@ -24,9 +23,10 @@ public class UserController {
 
 	//카카오 로그인 redirect_uri
 	//인증 코드 받기
-	@GetMapping("/login/kakao")
+	@GetMapping("/user/login/kakao")
 	public Map<String,Object> kakaoLogin(@RequestParam("code") String code){
 		Map<String,Object> map = new HashMap<>();
+		int resultCode;
 		
 		map.put("con", "success");
 		
@@ -50,6 +50,8 @@ public class UserController {
 			
 			//사용자 정보 요청에서 에러가 났으면 
 			if(infoError != null) {
+				resultCode = (int) infoMap.get("resultCode");
+				map.put("resultCode", resultCode);
 				//error 내용 담아서 리턴
 				map.put("error", infoError);
 				return map;
@@ -101,6 +103,9 @@ public class UserController {
 		}
 		//접근 토큰 얻는 과정에서 에러가 났으면
 		else {
+			resultCode = (int) tokenMap.get("resultCode");
+			
+			map.put("resultCode", resultCode);
 			map.put("error", tokenError);
 			return map;
 		}
@@ -111,7 +116,7 @@ public class UserController {
 	}
 	
 	//닉네임 중복검사
-	@PostMapping("/nicknameCheck")
+	@PostMapping("/user/nicknameCheck")
 	public Map<String,Object> nicknameCheck(@RequestBody Map<String,Object> param){
 		Map<String,Object> map = new HashMap<>();
 		map.put("con", "success");
@@ -124,7 +129,7 @@ public class UserController {
 	}
 	
 	//닉네임 설정 요청
-	@PostMapping("/nickname")
+	@PostMapping("/user/nickname")
 	public Map<String,Object> setNickname(@RequestBody Map<String,Object> param){
 		Map<String,Object> map = new HashMap<>();
 		map.put("con", "success");

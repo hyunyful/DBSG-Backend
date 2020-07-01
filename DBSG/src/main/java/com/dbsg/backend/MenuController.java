@@ -19,14 +19,13 @@ import com.dbsg.backend.domain.MenuDisplay;
 import com.dbsg.backend.service.MenuService;
 
 @RestController
-@RequestMapping("/menu")
 public class MenuController {
 
 	@Autowired
 	private MenuService menuService;
 	
 	//메뉴,레시피 등록
-	@PostMapping("/insert")
+	@PostMapping("/menu/insert")
 	public Map<String,Object> menuInsert(@RequestBody Map<String,Object> param){
 		Map<String,Object> map = new HashMap<>();		//리턴될 map
 		boolean result = false;		//결과를 담을 boolean 변수
@@ -53,7 +52,7 @@ public class MenuController {
 	}
 	
 	//전체 메뉴 조회
-	@GetMapping("/list")
+	@GetMapping("/menu/list")
 	public Map<String,Object> menuList(){
 		Map<String,Object> map = new HashMap<>();
 		List<MenuDisplay> list = new ArrayList<>();
@@ -78,7 +77,7 @@ public class MenuController {
 	}
 	
 	//문자열로 메뉴 검색
-	@GetMapping("/search/{keyword}")
+	@GetMapping("/menu/search/{keyword}")
 	public Map<String,Object> menuStringSearch(@PathVariable String keyword){
 		Map<String,Object> map = new HashMap<>();
 		List<MenuDisplay> list = new ArrayList<>();
@@ -103,7 +102,7 @@ public class MenuController {
 	}
 	
 	//태그로 메뉴 검색
-	@GetMapping("/tag/{tagNo}")
+	@GetMapping("/menu/tag/{tagNo}")
 	public Map<String,Object> menuTagSearch(@PathVariable int tagNo){
 		Map<String,Object> map = new HashMap<>();
 		List<MenuDisplay> list = new ArrayList<>();

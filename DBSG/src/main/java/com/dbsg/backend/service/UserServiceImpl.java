@@ -56,8 +56,8 @@ public class UserServiceImpl implements UserService {
 			//파라미터로는 grant_type, client_id, redirect_uri, code 를 전송
 			//grant_type은 authorization_code로 고정, client_id와 redirect_uri는 변경 가능하므로 변수로 설정, code는 매개변수
 			String client_id = "51c7c8f63345a28a25a4b28fff7048ef";
-			String redirect_uri = "http://localhost:8080/user/login/kakao";
-			
+			//String redirect_uri = "http://localhost:8080/user/login/kakao";
+			String redirect_uri = "http://15.165.215.38:8080/user/login/kakao";
 			//전체 파라미터 (전송용)
 			String parameter = "grant_type=authorization_code&client_id="+client_id;
 			parameter += "&redirect_uri="+redirect_uri+"&code="+code;
@@ -104,6 +104,8 @@ public class UserServiceImpl implements UserService {
 				//access_token 값을 map에 담아서 리턴
 				accessToken = data.getString("access_token");
 				
+				System.out.println("accessToken는 "+accessToken);
+				
 				map.put("accessToken", accessToken);
 				
 				return map;
@@ -111,7 +113,8 @@ public class UserServiceImpl implements UserService {
 			}
 			//실패하면
 			else {
-				error = "통신 실패링";
+				error = "통신 실패링1";
+				map.put("resultCode", resultCode);
 				map.put("error", error);
 				return map;
 			}
@@ -119,13 +122,13 @@ public class UserServiceImpl implements UserService {
 			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
-			System.out.println("URL 만들기에 실패링");
+			System.out.println("URL 만들기에 실패링1");
 			error = e.getMessage();
 			map.put("error", error);
 			return map;
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("URLConnection에 실패링");
+			System.out.println("URLConnection에 실패링1");
 			error = e.getMessage();
 			map.put("error", error);
 			return map;
@@ -227,19 +230,22 @@ public class UserServiceImpl implements UserService {
 			}
 			//실패하면
 			else {
-				error = "통신 실패링";
+				error = "통신 실패링2";
+				map.put("resultCode", resultCode);
 				map.put("error", error);
 				return map;
 			}
 			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
-			error = "URL 만들기에 실패링";
+			System.out.println("URL 만들기에 실패링2");
+			error = e.getMessage();
 			map.put("error", error);
 			return map;
 		} catch (IOException e) {
 			e.printStackTrace();
-			error = "URLConnection에 실패링";
+			System.out.println("URLConnection에 실패링2");
+			error = e.getMessage();
 			map.put("error", error);
 			return map;
 		}

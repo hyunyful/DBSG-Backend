@@ -13,7 +13,7 @@
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/> 
         <!-- 접속할 데이터베이스 경로 -->
         <property name="url" 
-        	value="jdbc:mysql://ec2-15-165-205-186.ap-northeast-2.compute.amazonaws.com:3306/dbsgdb?useSSL=false&amp;serverTimezone=Asia/Seoul&amp;characterEncoding=utf-8"/>
+        	value="jdbc:mysql://15.165.215.38:3306/dbsgdb?useSSL=false&amp;serverTimezone=Asia/Seoul&amp;characterEncoding=utf-8"/>
         <!-- 접속할 계정 이름과 비밀번호 -->
         <property name="username" value="dbsg"/> 
         <property name="password" value="dbsg1234"/>
