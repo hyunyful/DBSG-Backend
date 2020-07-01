@@ -58,6 +58,7 @@ public class UserServiceImpl implements UserService {
 			String client_id = "51c7c8f63345a28a25a4b28fff7048ef";
 			//String redirect_uri = "http://localhost:8080/user/login/kakao";
 			String redirect_uri = "http://15.165.215.38:8080/user/login/kakao";
+			
 			//전체 파라미터 (전송용)
 			String parameter = "grant_type=authorization_code&client_id="+client_id;
 			parameter += "&redirect_uri="+redirect_uri+"&code="+code;
@@ -187,16 +188,18 @@ public class UserServiceImpl implements UserService {
 				//stream 닫기
 				input.close();
 				
-				//System.out.println(result);
+				//System.out.println("result는 "+result);
 				
 				//읽은 결과 JSONObject로 파싱
 				JSONObject data = new JSONObject(result);
 				JSONObject kakao_account = data.getJSONObject("kakao_account");
-				JSONObject profile = kakao_account.getJSONObject("profile");
+				JSONObject properties = data.getJSONObject("properties");
+				
+				//System.out.println("data는 "+data);
 				
 				//필요한 사용자 정보 추출
 				//프로필 사진 url 정보
-				String profile_image_url = profile.getString("profile_image_url");
+				String profile_image = properties.getString("profile_image");
 				//이메일
 				String email = kakao_account.getString("email");
 				//연령대
@@ -216,7 +219,7 @@ public class UserServiceImpl implements UserService {
 				
 				//사용자 정보를 User 객체에 담아서 리턴
 				User user = new User();
-				user.setUser_image(profile_image_url);
+				user.setUser_image(profile_image);
 				user.setUser_email(email);
 				user.setUser_age(age_range);
 				user.setUser_birthday(birthday);

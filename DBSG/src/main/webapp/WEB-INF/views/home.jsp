@@ -18,6 +18,7 @@
 function kakao(){
 	var appKey = "51c7c8f63345a28a25a4b28fff7048ef";
 	var redirect_uri = "http://15.165.215.38:8080/user/login/kakao";
+	//var redirect_uri = "http://localhost:8080/user/login/kakao";
 	
 	var uri = "https://kauth.kakao.com/oauth/authorize?"
 	uri += "client_id="+appKey+"&redirect_uri="+redirect_uri+"&scope=profile,account_email,age_range,birthday,gender";
