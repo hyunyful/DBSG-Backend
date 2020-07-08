@@ -289,8 +289,7 @@ public class UserServiceImpl implements UserService {
 	//회원 정보로 DB 작업
 	@Override
 	public Map<String,Object> join(User user) {		
-		Map<String,Object> map = new HashMap<>();
-		
+		Map<String,Object> map = new HashMap<>();		//리턴될 map
 		String result = "";			//exist, needNickname, error 중 하나를 저장할 변수
 		
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition(); 
@@ -305,12 +304,7 @@ public class UserServiceImpl implements UserService {
 			
 			//1.해당 정보의 회원이 DB에 있는지 확인
 			//정보는 user에 들어있음
-			//System.out.println("user에 들어있는 정보 중 user_email은 "+user.getUser_email());
-			//System.out.println("user에 들어있는 정보 중 user_image_url은 "+user.getUser_image());
-			//System.out.println("user에 들어있는 정보 중 user_age는 "+user.getUser_age());
-			//System.out.println("user에 들어있는 정보 중 user_gender는 "+user.getUser_gender());
-			//System.out.println("user에 들어있는 정보 중 user_birthday는 "+user.getUser_birthday());
-			//System.out.println("user에 들어있는 정보 중 user_type은 "+user.getUser_type());
+			//System.out.println(user.toString());
 			
 			UserDisplay ud = userDao.userCheck(user);
 			
@@ -321,7 +315,7 @@ public class UserServiceImpl implements UserService {
 				result = "exist";
 				
 				//있다는 말과 함께
-				map.put("msg", result);
+				map.put("result", result);
 				//회원 정보 보내주기
 				map.put("ud", ud);
 				
@@ -340,13 +334,12 @@ public class UserServiceImpl implements UserService {
 					//3.닉네임이 필요하다는 것을 알려주기
 					result = "needNickname";
 					
-					map.put("msg", result);
-					
 					//4.회원번호 찾아서 같이 리턴
 					int user_no = userDao.findNoByInfo(user);
 					
 					//System.out.println(user_no);
 					
+					map.put("result", result);
 					map.put("user_no", user_no);
 					
 					tm.commit(status);
@@ -356,13 +349,16 @@ public class UserServiceImpl implements UserService {
 				else {
 					result = "error";
 					tm.rollback(status); 
-					map.put("msg", result);
+					map.put("result", result);
+					map.put("error", "회원가입에 실패");
 					return map;
 				}
 			}
 			
 		}catch(Exception e) {
 			e.printStackTrace(); 
+			map.put("result", "error");
+			map.put("error", e.getMessage());
 			tm.rollback(status); 
 			throw e; 
 		}
@@ -371,26 +367,81 @@ public class UserServiceImpl implements UserService {
 
 	//닉네임 중복검사
 	@Override
-	public boolean nicknameCheck(Map<String, Object> param) {
-		boolean result = false;
+	public Map<String,Object> nicknameCheck(Map<String, Object> param) {
+		Map<String,Object> map = new HashMap<>();
 		
-		//param json으로 파싱
-		JSONObject data = new JSONObject(param);
+		//1.해당 요청의 닉네임이 있는지 확인
+		//2.없으면 선점
+		//3.있으면 다른 닉네임 가져오라고 리턴
 		
-		//nickname 정보 추출
-		String nickname = data.getString("nickname");
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition(); 
+		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+		TransactionStatus status = tm.getTransaction(def); 
 		
-		//중복검사 수행
-		String nicknameResult = userDao.nicknameCheck(nickname);
-		
-		//닉네임결과가 있으면 false 리턴, 없으면 true 리턴
-		if(nicknameResult == null) {
-			result = true;
-		}else {
-			result = false;
+		try {
+			//param json으로 파싱
+			JSONObject json = new JSONObject(param);
+			
+			//추출할 정보
+			String nickname = "";
+			int user_no = 0;
+			
+			//json에서 정보 추출
+			if(json.has("nickname")) {
+				nickname = json.getString("nickname");
+			}else {
+				map.put("nicknameCheck", "fail");
+				map.put("error", "nickname 없음");
+				return map;
+			}
+			
+			if(json.has("user_no")) {
+				user_no = json.getInt("user_no");
+			}else {
+				map.put("nicknameCheck", "fail");
+				map.put("error", "user_no 없음");
+				return map;
+			}
+			
+			//중복검사 수행
+			String result = userDao.nicknameCheck(nickname);
+			
+			//해당 닉네임이 있으면 있다고 리턴
+			if(result != null) {
+				map.put("nicknameCheck", "success");
+				map.put("data", "exist");
+				tm.commit(status);
+				return map;
+			}else {		//해당 닉네임이 없으면
+				//User 객체에 정보를 담아서
+				User user = new User();
+				user.setUser_nickname(nickname);
+				user.setUser_no(user_no);
+				
+				//닉네임 설정해두기
+				int r1 = userDao.setNickname(user);
+				
+				//닉네임 선점에 성공하면
+				if(r1>0) {
+					map.put("nicknameCheck", "success");
+					map.put("data", "success");
+					tm.commit(status);
+					return map;
+				}else {			//닉네임 설정에 실패하면
+					map.put("nicknameCheck", "fail");
+					map.put("error", "닉네임 선점에 실패");
+					tm.rollback(status);
+					return map;
+				}
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			map.put("nicknameCheck", "fail");
+			map.put("error", e.getMessage());
+			throw e;
 		}
-		
-		return result;
+
 	}
 
 	//닉네임 설정 요청

@@ -83,4 +83,12 @@ public class User {
 		this.etc = etc;
 	}
 	
+	@Override
+	public String toString() {
+		return "User [user_no=" + user_no + ", user_email=" + user_email + ", user_nickname=" + user_nickname
+				+ ", user_age=" + user_age + ", user_gender=" + user_gender + ", user_birthday=" + user_birthday
+				+ ", user_image=" + user_image + ", user_type=" + user_type + ", user_level=" + user_level
+				+ ", user_delete=" + user_delete + ", etc=" + etc + "]";
+	}
+	
 }

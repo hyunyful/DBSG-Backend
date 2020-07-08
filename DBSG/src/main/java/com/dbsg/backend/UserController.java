@@ -25,70 +25,67 @@ public class UserController {
 	//인증 코드 받기
 	@GetMapping("/user/login/kakao")
 	public Map<String,Object> kakaoLogin(@RequestParam("code") String code){
-		Map<String,Object> map = new HashMap<>();
-		int resultCode;
+		Map<String,Object> map = new HashMap<>();				//결과로 리턴될 map
+		Map<String,Object> tokenMap = new HashMap<>();		//접근 토큰을 얻어오는데 사용되는 map
+		Map<String,Object> infoMap = new HashMap<>();			//사용자 정보를 얻어오는데 사용되는 map
+		int resultCode;			//모든 resultCode를 담을 하나의 변수
 		
 		map.put("con", "success");
 		
 		//System.out.println("접근 성공~ code는 "+code);
-		Map<String,Object> tokenMap = userService.getAccessToken(code);
+		tokenMap = userService.getAccessToken(code);
 		
 		String tokenError = (String) tokenMap.get("error");
-		//System.out.println("tokenError는 "+tokenError);
-		String accessToken = (String) tokenMap.get("accessToken");
-		//System.out.println("accessToken는 "+accessToken);
 		
 		//접근 토큰을 얻는 과정에서 에러가 없었으면
 		if(tokenError == null) {
+			String accessToken = (String) tokenMap.get("accessToken");
+			
 			//사용자 정보 요청하기
-			Map<String,Object> infoMap = userService.getUserInfo(accessToken);
+			 infoMap = userService.getUserInfo(accessToken);
 			
 			String infoError = (String) infoMap.get("error");
-			//System.out.println("controller에서 infoE는 "+infoE);
-			String result = (String) infoMap.get("result");
-			//map.put("result", result);
 			
 			//사용자 정보 요청에서 에러가 났으면 
 			if(infoError != null) {
 				resultCode = (int) infoMap.get("resultCode");
+				
+				//error 내용과 resultCode를 담아서 리턴
 				map.put("resultCode", resultCode);
-				//error 내용 담아서 리턴
 				map.put("error", infoError);
 				return map;
-			}
-			//사용자 정보 요청에서 에러가 안났으면
-			else {
-				//infoMap에서 user 정보를 담을 user 객체 추출
+			}else {				//사용자 정보 요청에서 에러가 안났으면
+				//infoMap에서 user 정보를 담은 user 객체 추출
 				User user = (User) infoMap.get("user");
 				
 				//회원정보 작업
 				Map<String,Object> userMap = userService.join(user);
 				
-				//msg에 회원정보 작업의 결과가 담겨있음
-				String msg = (String) userMap.get("msg");
+				//result에 회원정보 작업의 결과가 담겨있음
+				String result = (String) userMap.get("result");
 				
-				//error가 있으면
-				if("error".equals(msg)) {
+				//result가 error면
+				if("error".equals(result)) {
 					map.put("data", "error");
-					map.put("error", msg);
+					map.put("error", result);
 					
 					return map;
 				}
-				//msg가 needNickname이면
-				else if("needNickname".equals(msg)) {
+				//result가 needNickname이면
+				else if("needNickname".equals(result)) {
 					//user_no 랑 같이 리턴
 					//해당 유저 번호 다시 보내달라고..
 					int no = (int) userMap.get("user_no");
 				
 					//System.out.println("controller : "+no);
 					
-					map.put("data", msg);
+					map.put("data", result);
 					map.put("user_no", no);
 					
 					return map;
 				}
 				//해당 회원의 정보가 있으면
-				else if("exist".equals(msg)){
+				else if("exist".equals(result)){
 					
 					UserDisplay ud = (UserDisplay) userMap.get("ud");
 					int user_no = ud.getUser_no();
@@ -97,7 +94,7 @@ public class UserController {
 					UserDisplay userInfo = userService.findInfoByNo(user_no);
 					
 					map.put("user_info", userInfo);
-					map.put("data", msg);
+					map.put("data", result);
 				}
 			}
 		}
@@ -119,11 +116,11 @@ public class UserController {
 	@PostMapping("/user/nicknameCheck")
 	public Map<String,Object> nicknameCheck(@RequestBody Map<String,Object> param){
 		Map<String,Object> map = new HashMap<>();
+		
+		map = userService.nicknameCheck(param);
+		
 		map.put("con", "success");
-		
-		boolean result = userService.nicknameCheck(param);
-		
-		map.put("nicknameResult", result);
+		map.put("sendData", param);
 		
 		return map;
 	}

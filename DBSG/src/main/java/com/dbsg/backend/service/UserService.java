@@ -17,7 +17,7 @@ public interface UserService {
 	public Map<String,Object> join(User user);
 	
 	//닉네임 중복검사
-	public boolean nicknameCheck(Map<String,Object> param);
+	public Map<String,Object> nicknameCheck(Map<String,Object> param);
 	
 	//닉네임 설정
 	public Map<String,Object> setNickname(Map<String,Object> param);

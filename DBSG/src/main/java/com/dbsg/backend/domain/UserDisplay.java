@@ -33,4 +33,10 @@ public class UserDisplay {
 		this.user_level = user_level;
 	}
 	
+	@Override
+	public String toString() {
+		return "UserDisplay [user_no=" + user_no + ", user_nickname=" + user_nickname + ", user_image=" + user_image
+				+ ", user_level=" + user_level + "]";
+	}
+	
 }
