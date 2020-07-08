@@ -25,23 +25,11 @@ public class RecipeController {
 	@GetMapping("/recipe/{menu_no}")
 	public Map<String,Object> showRecipe(@PathVariable int menu_no){
 		Map<String,Object> map = new HashMap<>();
-		List<Recipe> list = new ArrayList<>();
+		
+		map = recipeService.showRecipe(menu_no);
 		
 		map.put("con", "success");
 		map.put("keyword", menu_no);
-		
-		try {
-			list = recipeService.showRecipe(menu_no);
-		}catch(Exception e) {
-			e.printStackTrace();
-			map.put("recipe", "fail");
-			map.put("error", e.getMessage());
-			return map;
-		}
-		
-		map.put("recipe", "success");
-		map.put("size", list.size());
-		map.put("data", list);
 		
 		return map;
 	}

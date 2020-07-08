@@ -82,4 +82,12 @@ public class MenuDisplay {
 	public void setMenu_readCnt(int menu_readCnt) {
 		this.menu_readCnt = menu_readCnt;
 	}
+	
+	@Override
+	public String toString() {
+		return "MenuDisplay [menu_no=" + menu_no + ", menu_name=" + menu_name + ", menu_image=" + menu_image
+				+ ", menu_description=" + menu_description + ", menu_reqMaterial=" + menu_reqMaterial + ", menu_star="
+				+ menu_star + ", menu_tag=" + menu_tag + ", menu_totalTime=" + menu_totalTime + ", menu_writer="
+				+ menu_writer + ", menu_preferCnt=" + menu_preferCnt + ", menu_readCnt=" + menu_readCnt + "]";
+	}
 }

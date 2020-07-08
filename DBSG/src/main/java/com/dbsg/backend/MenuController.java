@@ -28,25 +28,10 @@ public class MenuController {
 	@PostMapping("/menu/insert")
 	public Map<String,Object> menuInsert(@RequestBody Map<String,Object> param){
 		Map<String,Object> map = new HashMap<>();		//리턴될 map
-		boolean result = false;		//결과를 담을 boolean 변수
+		
+		map = menuService.menuInsert(param);
 		
 		map.put("con", "success");		//controller에 연결된 것을 알려주는 key,value
-		
-		try {
-			result = menuService.menuInsert(param);
-		}catch(Exception e) {
-			e.printStackTrace();
-			map.put("menuInsert", "fail");
-			map.put("error", e.getMessage());
-			return map;
-		}
-		
-		//System.out.println("controller "+result);
-		
-		//성공하면 success 보내기
-		if(result == true) {
-			map.put("menuInsert", "success");
-		}
 		
 		return map;
 	}
@@ -55,73 +40,36 @@ public class MenuController {
 	@GetMapping("/menu/list")
 	public Map<String,Object> menuList(){
 		Map<String,Object> map = new HashMap<>();
-		List<MenuDisplay> list = new ArrayList<>();
+		
+		map = menuService.menuList();
 		
 		map.put("con", "success");
-		
-		try {
-			list = menuService.menuList();
-		}catch(Exception e) {
-			e.printStackTrace();
-			map.put("menuList", "fail");
-			map.put("error", e.getMessage());
-			return map;
-		}
-		
-		//실행에 에러가 없으면
-		map.put("menuList", "success");		//성공 알려주기
-		map.put("size", list.size());				//data size 알려주기
-		map.put("data", list);						//data 보내주기
-		
+
 		return map;
 	}
 	
 	//문자열로 메뉴 검색
-	@GetMapping("/menu/search/{keyword}")
-	public Map<String,Object> menuStringSearch(@PathVariable String keyword){
+	@GetMapping("/menu/search/{word}")
+	public Map<String,Object> stringSearch(@PathVariable String word){
 		Map<String,Object> map = new HashMap<>();
-		List<MenuDisplay> list = new ArrayList<>();
+		
+		map = menuService.searchMenuByString(word);
 		
 		map.put("con", "success");
-		map.put("keyword", keyword);
-		
-		try {
-			list = menuService.searchMenuByString(keyword);
-		}catch(Exception e) {
-			e.printStackTrace();
-			map.put("menuList", "fail");
-			map.put("error", e.getMessage());
-			return map;
-		}
-		
-		map.put("menuList", "success");
-		map.put("size", list.size());
-		map.put("data", list);
+		map.put("keyword", word);
 		
 		return map;
 	}
 	
 	//태그로 메뉴 검색
 	@GetMapping("/menu/tag/{tagNo}")
-	public Map<String,Object> menuTagSearch(@PathVariable int tagNo){
+	public Map<String,Object> tagSearch(@PathVariable int tagNo){
 		Map<String,Object> map = new HashMap<>();
-		List<MenuDisplay> list = new ArrayList<>();
 		
+		map = menuService.searchMenuByTag(tagNo);
+
 		map.put("con", "success");
 		map.put("keyword", tagNo);
-		
-		try {
-			list = menuService.searchMenuByTag(tagNo);
-		}catch(Exception e) {
-			e.printStackTrace();
-			map.put("menuList", "fail");
-			map.put("error", e.getMessage());
-			return map;
-		}
-		
-		map.put("menuList", "success");
-		map.put("size", list.size());
-		map.put("data", list);
 		
 		return map;
 	}

@@ -9,7 +9,6 @@ public class Recipe {
 	 private int recipe_fire;
 	 private int recipe_reqTime;
 	 private String recipe_image;
-	 private String etc;
 	 
 	public int getRecipe_no() {
 		return recipe_no;
@@ -53,11 +52,12 @@ public class Recipe {
 	public void setRecipe_image(String recipe_image) {
 		this.recipe_image = recipe_image;
 	}
-	public String getEtc() {
-		return etc;
+	@Override
+	public String toString() {
+		return "Recipe [recipe_no=" + recipe_no + ", menu_no=" + menu_no + ", recipe_processNo=" + recipe_processNo
+				+ ", recipe_action=" + recipe_action + ", recipe_fire=" + recipe_fire + ", recipe_reqTime="
+				+ recipe_reqTime + ", recipe_image=" + recipe_image + "]";
 	}
-	public void setEtc(String etc) {
-		this.etc = etc;
-	}
-	 
+	
+	
 }

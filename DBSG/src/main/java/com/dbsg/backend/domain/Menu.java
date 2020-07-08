@@ -98,4 +98,13 @@ public class Menu {
 	public void setEtc(String etc) {
 		this.etc = etc;
 	}
+	@Override
+	public String toString() {
+		return "Menu [menu_no=" + menu_no + ", menu_name=" + menu_name + ", menu_writer=" + menu_writer
+				+ ", menu_category=" + menu_category + ", menu_tag=" + menu_tag + ", menu_reqMaterial="
+				+ menu_reqMaterial + ", menu_needlessMaterial=" + menu_needlessMaterial + ", menu_description="
+				+ menu_description + ", menu_image=" + menu_image + ", menu_kids=" + menu_kids + ", menu_totalTime="
+				+ menu_totalTime + ", menu_delete=" + menu_delete + ", menu_star=" + menu_star + ", menu_preferCnt="
+				+ menu_preferCnt + ", menu_readCnt=" + menu_readCnt + ", etc=" + etc + "]";
+	}
 }

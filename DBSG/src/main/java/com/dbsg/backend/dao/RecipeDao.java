@@ -18,4 +18,9 @@ public class RecipeDao {
 	public List<Recipe> showRecipe(int menu_no){
 		return sqlSession.selectList("recipe.showRecipe", menu_no);
 	}
+	
+	//해당 메뉴의 조회수 증가
+	public int readCnt(int menu_no) {
+		return sqlSession.update("menu.readCnt", menu_no);
+	}
 }

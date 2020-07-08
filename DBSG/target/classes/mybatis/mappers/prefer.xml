@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="prefer">
+
+	<!-- 즐겨찾기 수가 가장 많은 3개 메뉴 불러오기 -->
+	<select id="bestPrefer3" resultType="MenuDisplay">
+		select m.menu_no,m.menu_name,m.menu_image,m.menu_description,m.menu_reqMaterial,ms.menu_star,
+		ms.menu_tag,ms.menu_totalTime,ms.menu_writer,ms.menu_preferCnt,ms.menu_readCnt
+		from menu m, menu_stat ms
+		order by ms.menu_preferCnt asc
+		limit 3
+	</select>
+
+</mapper>

@@ -41,9 +41,14 @@ public class MenuDao {
 		return sqlSession.selectList("menu.menuList");
 	}
 	
-	//문자열로 메뉴 검색
-	public List<MenuDisplay> searchMenuByString(String menu_name){
-		return sqlSession.selectList("menu.searchMenuByString", menu_name);
+	//문자열로 메뉴번호 검색
+	public List<Integer> searchMenuNoByString(String keyword){
+		return sqlSession.selectList("menu.searchMenuNoByString", keyword);
+	}
+	
+	//메뉴 번호로 해당 메뉴 정보 검색
+	public MenuDisplay searchMenuInfoByNo(int menu_no){
+		return sqlSession.selectOne("menu.searchMenuInfoByNo", menu_no);
 	}
 	
 	//태그로 메뉴 검색

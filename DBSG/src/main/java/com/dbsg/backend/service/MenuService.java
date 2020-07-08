@@ -9,15 +9,15 @@ import com.dbsg.backend.domain.MenuDisplay;
 public interface MenuService {
 
 	//메뉴,레시피 등록
-	public boolean menuInsert(Map<String,Object> param);
+	public Map<String,Object> menuInsert(Map<String,Object> param);
 	
 	//전체 메뉴 조회
-	public List<MenuDisplay> menuList();
+	public Map<String,Object> menuList();
 	
 	//문자열로 메뉴 검색
-	public List<MenuDisplay> searchMenuByString(String keyword);
+	public Map<String,Object> searchMenuByString(String keyword);
 	
 	//태그로 메뉴 검색
-	public List<MenuDisplay> searchMenuByTag(int tagNo);
+	public Map<String,Object> searchMenuByTag(int tagNo);
 	
 }

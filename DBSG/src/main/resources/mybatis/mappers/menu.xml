@@ -41,11 +41,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<!-- 문자열로 메뉴 조회 -->
-	<select id="searchMenuByString" resultType="MenuDisplay" parameterType="java.lang.String">
-		select m1.menu_no,m1.menu_name,m1.menu_image,m1.menu_description,m1.menu_reqMaterial,m2.menu_star,
-		m1.menu_tag,m1.menu_totalTime,m1.menu_writer,m2.menu_preferCnt,m2.menu_readCnt
+	<!-- 문자열로 메뉴 번호 찾기 -->
+	<select id="searchMenuNoByString" resultType="java.lang.Integer" parameterType="java.lang.String">
+		select distinct menu_no
+		from menu
+		where menu_name like #{keyword} or menu_description like #{keyword} or menu_reqMaterial like #{keyword}
+	</select>
+	
+	<!-- 메뉴 번호로 해당 메뉴 정보 찾기 -->
+	<select id="searchMenuInfoByNo" parameterType="java.lang.Integer" resultType="MenuDisplay">
+		select distinct m1.menu_no,m1.menu_name,m1.menu_image,m1.menu_description,m1.menu_reqMaterial,
+		m2.menu_star, m1.menu_tag,m1.menu_totalTime,m1.menu_writer,m2.menu_preferCnt,m2.menu_readCnt
 		from menu m1,menu_stat m2
-		where m1.menu_no=m2.menu_no and m1.menu_delete=0 and m1.menu_name like #{menu_name}
+		where m1.menu_no=m2.menu_no and m1.menu_delete=0 and m1.menu_no = #{menu_no}
 	</select>
 	
 	<!-- 태그로 메뉴 조회 -->
@@ -55,4 +63,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from menu m1,menu_stat m2
 		where m1.menu_no=m2.menu_no and m1.menu_delete=0 and m1.menu_tag like #{tag}
 	</select>
+	
+	<!-- 레시피 볼 때 해당 메뉴의 조회수 1 증가 -->
+	<update id="readCnt" parameterType="java.lang.Integer">
+		update menu_stat
+		set menu_readCnt = menu_readCnt+1
+		where menu_no = #{menu_no}
+	</update>
+	
 </mapper>
