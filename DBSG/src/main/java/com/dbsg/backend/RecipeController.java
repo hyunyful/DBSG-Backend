@@ -15,14 +15,24 @@ import com.dbsg.backend.domain.MenuDisplay;
 import com.dbsg.backend.domain.Recipe;
 import com.dbsg.backend.service.RecipeService;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 public class RecipeController {
 	
 	@Autowired
 	private RecipeService recipeService;
 
-	//해당 메뉴의 전체 레시피 조회
+	//해당 메뉴의 상세정보 및 전체 레시피 조회
+	@ApiOperation(value="해당 메뉴의 상세정보 및 전체 레시피 조회")
 	@GetMapping("/recipe/{menu_no}")
+	@ApiImplicitParams(
+			{@ApiImplicitParam(name = "menu_no", value = "메뉴 번호", required = true, 
+											dataType = "int", paramType = "path", defaultValue = "")
+			}
+	)
 	public Map<String,Object> showRecipe(@PathVariable int menu_no){
 		Map<String,Object> map = new HashMap<>();
 		

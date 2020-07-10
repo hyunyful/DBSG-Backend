@@ -6,12 +6,17 @@
 <head>
 	<title>Home</title>
 </head>
+<script
+  src="https://code.jquery.com/jquery-1.12.4.min.js"
+  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+  crossorigin="anonymous"></script>
 <body>
 <h1>
 	Hello DBSG!  
 </h1>
 
 <button onClick="kakao()">카카오 로그인</button>
+<button onClick="naver()">네이버 로그인</button><br>
 <button onClick="location.href='/controller'">컨트롤러 정보 보기</button>
 
 <script>
@@ -28,6 +33,35 @@ function kakao(){
 	//alert(uri);
 	
 	location.href=uri;
+}
+</script>
+
+<script>
+function naver(){
+	//상태 토큰 생성 ajax
+	$.ajax({
+		url:"/naver/state",
+		type:"get",
+		success:function(result){
+			//console.log(result.state);
+			
+			var client_id = "m8QQGZXfACv5KdlFw8oI";
+			//var redirect_uri = "http://localhost:8080/user/login/naver";
+			var redirect_uri = "http://15.165.215.38:8080/user/login/naver";
+			var state = result.state;
+			
+			//https://nid.naver.com/oauth2.0/authorize?client_id={클라이언트 아이디}&response_type=code&redirect_uri={개발자 센터에 등록한 콜백 URL(URL 인코딩)}&state={상태 토큰}
+			var uri = "https://nid.naver.com/oauth2.0/authorize?";
+			uri += "client_id="+client_id+"&response_type=code&redirect_uri="+redirect_uri;
+			uri += "&state="+state;
+			
+			//console.log(uri);
+			//alert(state);
+			location.href=uri;
+			
+		}
+	});
+	
 }
 </script>
 

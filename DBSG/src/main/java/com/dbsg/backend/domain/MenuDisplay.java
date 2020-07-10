@@ -9,6 +9,7 @@ public class MenuDisplay {
 	private String menu_image;
 	private String menu_description;
 	private String menu_reqMaterial;
+	private String menu_needlessMaterial;
 	private float menu_star;
 	private String menu_tag;
 	private int menu_totalTime;
@@ -82,12 +83,18 @@ public class MenuDisplay {
 	public void setMenu_readCnt(int menu_readCnt) {
 		this.menu_readCnt = menu_readCnt;
 	}
-	
+	public String getMenu_needlessMaterial() {
+		return menu_needlessMaterial;
+	}
+	public void setMenu_needlessMaterial(String menu_needlessMaterial) {
+		this.menu_needlessMaterial = menu_needlessMaterial;
+	}
 	@Override
 	public String toString() {
 		return "MenuDisplay [menu_no=" + menu_no + ", menu_name=" + menu_name + ", menu_image=" + menu_image
-				+ ", menu_description=" + menu_description + ", menu_reqMaterial=" + menu_reqMaterial + ", menu_star="
-				+ menu_star + ", menu_tag=" + menu_tag + ", menu_totalTime=" + menu_totalTime + ", menu_writer="
-				+ menu_writer + ", menu_preferCnt=" + menu_preferCnt + ", menu_readCnt=" + menu_readCnt + "]";
+				+ ", menu_description=" + menu_description + ", menu_reqMaterial=" + menu_reqMaterial
+				+ ", menu_needlessMaterial=" + menu_needlessMaterial + ", menu_star=" + menu_star + ", menu_tag="
+				+ menu_tag + ", menu_totalTime=" + menu_totalTime + ", menu_writer=" + menu_writer + ", menu_preferCnt="
+				+ menu_preferCnt + ", menu_readCnt=" + menu_readCnt + "]";
 	}
 }

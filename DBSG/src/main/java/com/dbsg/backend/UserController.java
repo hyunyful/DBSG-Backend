@@ -3,6 +3,9 @@ package com.dbsg.backend;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +23,8 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
+	
+	String myState = "";		//네이버 로그인할 때 상태토큰
 
 	//카카오 로그인 redirect_uri
 	//인증 코드 받기
@@ -108,6 +113,41 @@ public class UserController {
 		}
 		
 		//map.put("result", result);
+		
+		return map;
+	}
+	
+	@GetMapping("/naver/state")
+	public Map<String,Object> naverLoginState(){
+		Map<String,Object> map = new HashMap<>();
+		
+		map = userService.naverState();
+		
+		myState = (String) map.get("state");
+		
+		map.put("con", "success");
+		
+		return map;
+	}
+	
+	@GetMapping("/user/login/naver")
+	public Map<String,Object> naverLogin(@RequestParam("state") String state, @RequestParam("code") String code){
+		Map<String,Object> map = new HashMap<>();
+		
+		//System.out.println("myState는 "+myState);
+		//System.out.println("state는 "+state);
+		//System.out.println("code는 "+code);
+		
+		//상태토큰을 먼저 검증하고 접근토큰 생성
+		if(myState.equals(state)) {		//일치하면
+			//접근 토큰 생성
+			map = userService.naverLogin(state, code);
+		}else {										//일치하지 않으면
+			map.put("naverLogin", "fail");
+			map.put("error", "state Error");
+		}
+		
+		map.put("con", "success");
 		
 		return map;
 	}

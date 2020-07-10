@@ -23,22 +23,11 @@ public class TestController {
 	@Autowired
 	private UserDao userDao;
 	
-	@GetMapping
-	public Map<String,Object> getTest1(){
+	@GetMapping("/{word}")
+	public Map<String,Object> getTest1(@PathVariable String word){
 		Map<String,Object> map = new HashMap<>();
-		
-		Map<String,Object> infoMap = new HashMap<>();
-		Map<String,Object> dataMap = new HashMap<>();
-		
-		infoMap.put("이름", "최서현");
-		infoMap.put("나이", "27");
-		
-		dataMap.put("1", "data1");
-		dataMap.put("2", "data2");
-		dataMap.put("3", "data3");
-		
-		map.put("info", infoMap);
-		map.put("data", dataMap);
+
+		map.put("data", word);
 		
 		return map;
 	}
@@ -56,7 +45,7 @@ public class TestController {
 		user.setUser_email(email);
 		user.setUser_type(type);
 		
-		UserDisplay result = userDao.userCheck(user);
+		UserDisplay result = userDao.userCheck(user.getUser_email());
 		
 		map.put("result", result);
 		

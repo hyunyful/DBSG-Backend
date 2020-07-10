@@ -5,10 +5,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="user">
 
 	<!-- 해당 sns와 이메일 계정이 이미 있는지 확인 -->
-	<select id="userCheck" parameterType="User" resultType="UserDisplay">
+	<select id="userCheck" parameterType="java.lang.String" resultType="UserDisplay">
 		select *
 		from user
-		where user_email = #{user_email} and user_type = #{user_type} and user_delete is null
+		where user_email = #{user_email} and user_delete is null
 	</select>
 
 	<!-- 해당 계정의 정보가 없는 경우 insert -->
@@ -39,10 +39,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<!-- 회원 정보로 회원 번호 불러오기 -->
-	<select id="findNoByInfo" parameterType="User" resultType="java.lang.Integer">
+	<select id="findNoByInfo" parameterType="java.lang.String" resultType="java.lang.Integer">
 		select user_no
 		from user
-		where user_email = #{user_email} and user_type = #{user_type} and user_delete is null
+		where user_email = #{user_email} and user_delete is null
 	</select>
 	
 	<!-- 회원탈퇴 시 user_delete 변경 -->

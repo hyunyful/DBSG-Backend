@@ -14,8 +14,8 @@ public class UserDao {
 	private SqlSession sqlSession;
 	
 	//해당 정보로 이전에 가입한 적이 있는지 확인
-	public UserDisplay userCheck(User user) {
-		return sqlSession.selectOne("user.userCheck", user);
+	public UserDisplay userCheck(String email) {
+		return sqlSession.selectOne("user.userCheck", email);
 	}
 	
 	//회원가입 진행
@@ -39,7 +39,7 @@ public class UserDao {
 	}
 	
 	//회원 정보로 회원 번호 얻어오기
-	public int findNoByInfo(User user) {
-		return sqlSession.selectOne("user.findNoByInfo",user);
+	public int findNoByInfo(String email) {
+		return sqlSession.selectOne("user.findNoByInfo",email);
 	}
 }

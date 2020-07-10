@@ -50,8 +50,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 메뉴 번호로 해당 메뉴 정보 찾기 -->
 	<select id="searchMenuInfoByNo" parameterType="java.lang.Integer" resultType="MenuDisplay">
-		select distinct m1.menu_no,m1.menu_name,m1.menu_image,m1.menu_description,m1.menu_reqMaterial,
-		m2.menu_star, m1.menu_tag,m1.menu_totalTime,m1.menu_writer,m2.menu_preferCnt,m2.menu_readCnt
+		select m1.menu_no,m1.menu_name,m1.menu_image,m1.menu_description,m1.menu_reqMaterial,
+		m2.menu_star, m1.menu_tag,m1.menu_totalTime,m1.menu_writer,m2.menu_preferCnt,m2.menu_readCnt,
+		m1.menu_needlessMaterial
 		from menu m1,menu_stat m2
 		where m1.menu_no=m2.menu_no and m1.menu_delete=0 and m1.menu_no = #{menu_no}
 	</select>

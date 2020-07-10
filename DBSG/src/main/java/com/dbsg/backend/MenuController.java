@@ -18,6 +18,10 @@ import com.dbsg.backend.domain.Menu;
 import com.dbsg.backend.domain.MenuDisplay;
 import com.dbsg.backend.service.MenuService;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 public class MenuController {
 
@@ -25,6 +29,7 @@ public class MenuController {
 	private MenuService menuService;
 	
 	//메뉴,레시피 등록
+	@ApiOperation(value="메뉴/레시피 등록")
 	@PostMapping("/menu/insert")
 	public Map<String,Object> menuInsert(@RequestBody Map<String,Object> param){
 		Map<String,Object> map = new HashMap<>();		//리턴될 map
@@ -37,6 +42,7 @@ public class MenuController {
 	}
 	
 	//전체 메뉴 조회
+	@ApiOperation(value="전체 메뉴 조회")
 	@GetMapping("/menu/list")
 	public Map<String,Object> menuList(){
 		Map<String,Object> map = new HashMap<>();
@@ -49,6 +55,12 @@ public class MenuController {
 	}
 	
 	//문자열로 메뉴 검색
+	@ApiOperation(value="메뉴이름, 재료, 설명 검색")
+	@ApiImplicitParams(
+			{@ApiImplicitParam(name = "word", value = "검색 문자열", required = true, 
+											dataType = "string", paramType = "path", defaultValue = "")
+			}
+	)
 	@GetMapping("/menu/search/{word}")
 	public Map<String,Object> stringSearch(@PathVariable String word){
 		Map<String,Object> map = new HashMap<>();
@@ -62,6 +74,12 @@ public class MenuController {
 	}
 	
 	//태그로 메뉴 검색
+	@ApiOperation(value="태그별 메뉴 검색")
+	@ApiImplicitParams(
+			{@ApiImplicitParam(name = "tagNo", value = "태그 번호", required = true, 
+											dataType = "int", paramType = "path", defaultValue = "")
+			}
+	)
 	@GetMapping("/menu/tag/{tagNo}")
 	public Map<String,Object> tagSearch(@PathVariable int tagNo){
 		Map<String,Object> map = new HashMap<>();

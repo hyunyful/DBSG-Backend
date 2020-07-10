@@ -4,11 +4,15 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -306,7 +310,7 @@ public class UserServiceImpl implements UserService {
 			//정보는 user에 들어있음
 			//System.out.println(user.toString());
 			
-			UserDisplay ud = userDao.userCheck(user);
+			UserDisplay ud = userDao.userCheck(user.getUser_email());
 			
 			//회원이 있으면
 			if(ud != null) {
@@ -335,7 +339,7 @@ public class UserServiceImpl implements UserService {
 					result = "needNickname";
 					
 					//4.회원번호 찾아서 같이 리턴
-					int user_no = userDao.findNoByInfo(user);
+					int user_no = userDao.findNoByInfo(user.getUser_email());
 					
 					//System.out.println(user_no);
 					
@@ -537,6 +541,237 @@ public class UserServiceImpl implements UserService {
 		UserDisplay userInfo = userDao.findInfoByNo(user_no);
 		
 		return userInfo;
+	}
+
+	//네이버 로그인을 위한 토큰 생성
+	@Override
+	public Map<String, Object> naverState() {
+		Map<String,Object> map = new HashMap<>();
+		String state = "";		//토큰을 저장할 변수
+
+		try {
+			
+			//상태 토큰으로 사용할 랜덤 문자열 생성
+			SecureRandom random = new SecureRandom();
+			state = new BigInteger(130, random).toString(32);
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			map.put("naverToken", "fail");
+			map.put("error", e.getMessage());
+		}
+		
+		map.put("naverToken", "success");
+		map.put("state", state);
+		
+		return map;
+	}
+
+	//네이버 로그인
+	@Override
+	public Map<String, Object> naverLogin(String state, String code) {
+		Map<String,Object> map = new HashMap<>();
+		
+		String client_id = "m8QQGZXfACv5KdlFw8oI";
+		String client_secret = "hYid659iHl";
+		
+		//https://nid.naver.com/oauth2.0/token?client_id={클라이언트 아이디}&client_secret={클라이언트 시크릿}&grant_type=authorization_code&state={상태 토큰}&code={인증 코드}
+		String uri1 = "https://nid.naver.com/oauth2.0/token?";
+		uri1 += "client_id="+client_id+"&client_secret="+client_secret;
+		uri1 += "&grant_type=authorization_code&state="+state+"&code="+code;
+		
+		try {
+			URL url = new URL(uri1);
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			
+			con.setRequestMethod("GET");
+			
+			con.connect();
+			
+			//결과 코드가 200이면 정상
+			if(con.getResponseCode() == 200) {
+				BufferedReader input = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				
+				String line = "";				//결과 한줄씩
+				String result = "";			//총 결과 담을 변수
+				
+				while(true) {
+					line = input.readLine();
+					
+					if(line == null) {
+						break;
+					}
+					
+					result += line;
+				}
+				
+				input.close();
+				
+				//System.out.println(result);
+				
+				//JSON으로 파싱
+				JSONObject data = new JSONObject(result);
+				
+				//필요한 데이터만 추출
+				String accessToken = data.getString("access_token");			//접근 토큰
+				String token_type = data.getString("token_type");				//사용자 정보 요청할 때 필요
+				
+				//토큰으로 네이버 사용자의 정보 요청 uri
+				String uri2 = "https://openapi.naver.com/v1/nid/me";
+				
+				URL url2 = new URL(uri2);
+				HttpURLConnection con2 = (HttpURLConnection) url2.openConnection();
+				
+				con2.setRequestMethod("GET");
+				//헤더에 정보 담아서
+				con2.setRequestProperty("Authorization", token_type+" "+accessToken);
+				
+				//보내기
+				con2.connect();
+				
+				//결과 코드가 200이면 성공
+				if(con2.getResponseCode() == 200) {
+					input = new BufferedReader(new InputStreamReader(con2.getInputStream()));
+					
+					line = "";
+					result = "";		//두개 변수 초기화
+					
+					while(true) {
+						line = input.readLine();
+						
+						if(line == null) {
+							break;
+						}
+						
+						result += line;
+					}
+					
+					input.close();
+					
+					//System.out.println(result);
+					
+					//JSON 파싱
+					data = new JSONObject(result);
+
+					//response가 있으면
+					if(data.has("response")) {
+						JSONObject response = data.getJSONObject("response");
+						
+						//추출할 정보
+						String profile_image = "";		//사진
+						String age = "";						//나이대
+						String gender = "";				//성별 (M,F로 리턴됨)
+						int user_gender = 0;				//gender가 M이면 1, F면 2
+						String email = "";					//이메일
+						String birthday = "";				//생일 (02-13 형태로 오니까 0213으로 변경)
+						
+						//값이 있는것만 추출
+						if(response.has("profile_image")) {
+							profile_image = response.getString("profile_image");
+						}
+						
+						if(response.has("age")) {
+							age = response.getString("age");
+						}
+						
+						if(response.has("gender")) {
+							gender = response.getString("gender");
+							
+							if("M".equals(gender)) {
+								user_gender = 1;
+							}else if("F".equals(gender)) {
+								user_gender = 2;
+							}
+						}
+						
+						if(response.has("email")) {
+							email = response.getString("email");
+						}
+						
+						if(response.has("birthday")) {
+							String tempBirthday = response.getString("birthday");
+							
+							birthday = tempBirthday.substring(0,2) + tempBirthday.substring(3,5);
+						}
+						
+						//User 객체에 저장
+						User user = new User();
+						user.setUser_age(age);
+						user.setUser_birthday(birthday);
+						user.setUser_email(email);
+						user.setUser_gender(user_gender);
+						user.setUser_image(profile_image);
+						user.setUser_type("naver");
+						
+						//System.out.println(user.toString());
+						
+						//email로 해당 유저가 이미 DB에 있는지 확인
+						UserDisplay ud = userDao.userCheck(email);
+						
+						//해당 이메일의 유저가 없으면 회원가입 진행
+						if(ud == null) {
+							
+							int r1 = userDao.userJoin(user);
+							
+							//회원가입에 성공하면
+							if(r1>0) {
+								//닉네임이 필요하다고 유저 번호와 함께 리턴
+								
+								//유저 번호 찾아오기
+								int user_no = userDao.findNoByInfo(email);
+								
+								map.put("naverLogin", "success");
+								map.put("data", "needNickname");
+								map.put("user_no", user_no);
+								
+								return map;
+								
+								
+							}else {		//실패하면
+								map.put("naverLogin", "fail");
+								map.put("error", "userJoin fail..");
+								return map;
+							}
+							
+						}else {			//해당 이메일의 유저가 있으면
+							map.put("naverLogin", "success");
+							map.put("data", "exist");
+							map.put("user_info", ud);
+							return map;
+						}
+						
+						
+					}else {			//response가 없으면
+						map.put("naverLogin", "fail");
+						map.put("error", "result json dosen't has response..try again");
+						return map;
+					}
+					
+				}
+				
+				
+			}else {			//결과가 200이 아니면
+				map.put("naverLogin", "fail");
+				map.put("error", "resultCode is not 200, resultCode is "+con.getResponseCode());
+				return map;
+			}
+			
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			System.out.println("URL 만드는데 실패");
+			map.put("naverLogin", "fail");
+			map.put("error", "URL Make Error1");
+			return map;
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("URL Connection 실패");
+			map.put("naverLogin", "fail");
+			map.put("error", "URL Connection Error1");
+			return map;
+		}
+		
+		
+		return map;
 	}
 
 }
