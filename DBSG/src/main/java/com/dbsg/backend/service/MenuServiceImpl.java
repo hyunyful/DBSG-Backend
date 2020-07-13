@@ -16,6 +16,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.dbsg.backend.dao.MenuDao;
+import com.dbsg.backend.dao.RecipeDao;
 import com.dbsg.backend.domain.Menu;
 import com.dbsg.backend.domain.MenuDisplay;
 import com.dbsg.backend.domain.Recipe;
@@ -25,6 +26,9 @@ public class MenuServiceImpl implements MenuService {
 
 	@Autowired
 	private MenuDao menuDao;
+	
+	@Autowired
+	private RecipeDao recipeDao;
 	
 	@Autowired
 	private DataSourceTransactionManager tm;
@@ -61,7 +65,7 @@ public class MenuServiceImpl implements MenuService {
 				recipeArr = jsonParam.getJSONArray("recipe");
 			}else {
 				map.put("menuInsert", "fail");
-				map.put("error", "recipe json이 없음");
+				map.put("error", "recipe jsonArr이 없음");
 				return map;
 			}
 			
@@ -146,6 +150,7 @@ public class MenuServiceImpl implements MenuService {
 				return map;
 			}
 			
+			//고정값
 			String menu_writer = "admin";
 			int menu_category = 0;
 			
@@ -448,6 +453,77 @@ public class MenuServiceImpl implements MenuService {
 		map.put("tagSearch", "success");
 		map.put("size", list.size());
 		map.put("data", list);
+		
+		return map;
+	}
+
+	//조회수로 메뉴 추천
+	@Override
+	public Map<String, Object> menuRecommendByreadCnt() {
+		Map<String,Object> map = new HashMap<>();
+		List<MenuDisplay> list = new ArrayList<>();
+		
+		try {
+			list = menuDao.menuRecommendByreadCnt();
+			
+			map.put("data", list);
+			map.put("readCntRecommend", "success");
+			map.put("size", list.size());
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			map.put("readCntRecommend", "fail");
+			map.put("error", e.getMessage());
+		}
+		
+		return map;
+	}
+
+	//메뉴 삭제
+	@Override
+	public Map<String, Object> deleteMenu(int menu_no) {
+		Map<String,Object> map = new HashMap<>();
+		
+		//레시피 삭제 후 menu_stat 테이블과 menu 테이블에서 삭제
+		//recipe, menu_stat 테이블의 menu_no이 menu 테이블의 menu_no과 외래키이기 때문
+		
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition(); 
+		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+		TransactionStatus status = tm.getTransaction(def); 
+		
+		try {
+			
+			//레시피 삭제
+			int r1 = recipeDao.deleteRecipe(menu_no);
+			
+			//레시피 삭제에 성공하면
+			if(r1>0) {
+				//메뉴 삭제
+				int r2 = menuDao.deleteMenu(menu_no);
+				
+				//메뉴 삭제에 성공하면
+				if(r2>0) {
+					map.put("deleteMenu", "success");
+				}else {				//메뉴 삭제에 실패하면
+					map.put("deleteMenu", "fail");
+					map.put("error", "menu doesn't deleted...");
+					tm.rollback(status);
+				}
+						
+			}else {			//레시피 삭제에 실패하면
+				map.put("deleteMenu", "fail");
+				map.put("error", "recipe doesn't deleted...");
+				tm.rollback(status);
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			map.put("deleteMenu", "fail");
+			map.put("error", e.getMessage());
+			throw e;
+		}
+		
+		tm.commit(status);
 		
 		return map;
 	}

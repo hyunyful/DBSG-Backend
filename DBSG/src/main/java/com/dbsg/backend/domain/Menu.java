@@ -2,7 +2,7 @@ package com.dbsg.backend.domain;
 
 public class Menu {
  
-	 private Integer menu_no;
+	 private int menu_no;
 	 private String menu_name;
 	 private String menu_writer;
 	 private int menu_category;
@@ -37,12 +37,6 @@ public class Menu {
 	}
 	public void setMenu_writer(String menu_writer) {
 		this.menu_writer = menu_writer;
-	}
-	public int getMenu_category() {
-		return menu_category;
-	}
-	public void setMenu_category(int menu_category) {
-		this.menu_category = menu_category;
 	}
 	public String getMenu_tag() {
 		return menu_tag;
@@ -98,6 +92,34 @@ public class Menu {
 	public void setEtc(String etc) {
 		this.etc = etc;
 	}
+	public float getMenu_star() {
+		return menu_star;
+	}
+	public void setMenu_star(float menu_star) {
+		this.menu_star = menu_star;
+	}
+	public int getMenu_preferCnt() {
+		return menu_preferCnt;
+	}
+	public void setMenu_preferCnt(int menu_preferCnt) {
+		this.menu_preferCnt = menu_preferCnt;
+	}
+	public int getMenu_readCnt() {
+		return menu_readCnt;
+	}
+	public void setMenu_readCnt(int menu_readCnt) {
+		this.menu_readCnt = menu_readCnt;
+	}
+	public void setMenu_no(Integer menu_no) {
+		this.menu_no = menu_no;
+	}
+	public int getMenu_category() {
+		return menu_category;
+	}
+	public void setMenu_category(int menu_category) {
+		this.menu_category = menu_category;
+	}
+	
 	@Override
 	public String toString() {
 		return "Menu [menu_no=" + menu_no + ", menu_name=" + menu_name + ", menu_writer=" + menu_writer
@@ -107,4 +129,5 @@ public class Menu {
 				+ menu_totalTime + ", menu_delete=" + menu_delete + ", menu_star=" + menu_star + ", menu_preferCnt="
 				+ menu_preferCnt + ", menu_readCnt=" + menu_readCnt + ", etc=" + etc + "]";
 	}
+	
 }

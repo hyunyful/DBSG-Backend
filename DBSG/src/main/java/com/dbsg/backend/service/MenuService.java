@@ -20,4 +20,9 @@ public interface MenuService {
 	//태그로 메뉴 검색
 	public Map<String,Object> searchMenuByTag(int tagNo);
 	
+	//조회수로 메뉴 추천
+	public Map<String,Object> menuRecommendByreadCnt();
+	
+	//메뉴 삭제
+	public Map<String,Object> deleteMenu(int menu_no);
 }

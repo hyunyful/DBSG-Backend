@@ -23,6 +23,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
+@RequestMapping("/menu")
 public class MenuController {
 
 	@Autowired
@@ -30,7 +31,8 @@ public class MenuController {
 	
 	//메뉴,레시피 등록
 	@ApiOperation(value="메뉴/레시피 등록")
-	@PostMapping("/menu/insert")
+	//@PostMapping("/menu/insert")
+	@PostMapping("/insert")
 	public Map<String,Object> menuInsert(@RequestBody Map<String,Object> param){
 		Map<String,Object> map = new HashMap<>();		//리턴될 map
 		
@@ -43,7 +45,8 @@ public class MenuController {
 	
 	//전체 메뉴 조회
 	@ApiOperation(value="전체 메뉴 조회")
-	@GetMapping("/menu/list")
+	//@GetMapping("/menu/list")
+	@GetMapping("/list")
 	public Map<String,Object> menuList(){
 		Map<String,Object> map = new HashMap<>();
 		
@@ -61,7 +64,8 @@ public class MenuController {
 											dataType = "string", paramType = "path", defaultValue = "")
 			}
 	)
-	@GetMapping("/menu/search/{word}")
+	//@GetMapping("/menu/search/{word}")
+	@GetMapping("/search/{word}")
 	public Map<String,Object> stringSearch(@PathVariable String word){
 		Map<String,Object> map = new HashMap<>();
 		
@@ -80,7 +84,8 @@ public class MenuController {
 											dataType = "int", paramType = "path", defaultValue = "")
 			}
 	)
-	@GetMapping("/menu/tag/{tagNo}")
+	//@GetMapping("/menu/tag/{tagNo}")
+	@GetMapping("/tag/{tagNo}")
 	public Map<String,Object> tagSearch(@PathVariable int tagNo){
 		Map<String,Object> map = new HashMap<>();
 		
@@ -92,20 +97,30 @@ public class MenuController {
 		return map;
 	}
 	
-	//상민 테스트
-	@PostMapping("/sm/test")
-	public Map<String,Object> test(@RequestBody Map<String,Object> param){
+	//조회수로 추천
+	@ApiOperation(value="조회수로 추천")
+	@GetMapping("/recommend")
+	public Map<String,Object> readCntRecommend(){
 		Map<String,Object> map = new HashMap<>();
-	
-		System.out.println("접근 성공");
 		
-		JSONObject json = new JSONObject(param);
-		int num = json.getInt("data");
-		
-		int resultNum = num+1;
-		
-		map.put("resultNum", resultNum);
+		map = menuService.menuRecommendByreadCnt();
 		
 		return map;
 	}
+	
+	//메뉴 삭제
+	@ApiOperation(value="메뉴 삭제")
+	//@GetMapping("/menu/delete/{menu_no}")
+	@GetMapping("/delete/{menu_no}")
+	public Map<String,Object> deleteMenu(@PathVariable int menu_no){
+		Map<String,Object> map = new HashMap<>();
+		
+		map = menuService.deleteMenu(menu_no);
+		
+		map.put("con", "success");
+		map.put("sendData", menu_no);
+		
+		return map;
+	}
+
 }

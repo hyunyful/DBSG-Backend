@@ -3,11 +3,12 @@ package com.dbsg.backend.domain;
 //Frontend에 보내줄 정보만 담을 DTO
 public class MenuDisplay {
 
-	//메뉴 번호, 메뉴 이름, 메뉴 이미지, 메뉴 설명, 필요 재료, 메뉴 평점, 메뉴 태그, 예상 조리시간, 작성자, 즐찾수, 조회수
+	//메뉴 번호, 메뉴 이름, 메뉴 이미지, 메뉴 설명, 필요 재료, 메뉴 평점, 메뉴 태그, 예상 조리시간, 작성자, 즐찾수, 조회수, 난이도
 	private int menu_no;
 	private String menu_name;
 	private String menu_image;
 	private String menu_description;
+	private int menu_category;
 	private String menu_reqMaterial;
 	private String menu_needlessMaterial;
 	private float menu_star;
@@ -88,13 +89,21 @@ public class MenuDisplay {
 	}
 	public void setMenu_needlessMaterial(String menu_needlessMaterial) {
 		this.menu_needlessMaterial = menu_needlessMaterial;
+	}	
+	public int getMenu_category() {
+		return menu_category;
 	}
+	public void setMenu_category(int menu_category) {
+		this.menu_category = menu_category;
+	}
+	
 	@Override
 	public String toString() {
 		return "MenuDisplay [menu_no=" + menu_no + ", menu_name=" + menu_name + ", menu_image=" + menu_image
-				+ ", menu_description=" + menu_description + ", menu_reqMaterial=" + menu_reqMaterial
-				+ ", menu_needlessMaterial=" + menu_needlessMaterial + ", menu_star=" + menu_star + ", menu_tag="
-				+ menu_tag + ", menu_totalTime=" + menu_totalTime + ", menu_writer=" + menu_writer + ", menu_preferCnt="
-				+ menu_preferCnt + ", menu_readCnt=" + menu_readCnt + "]";
+				+ ", menu_description=" + menu_description + ", menu_category=" + menu_category + ", menu_reqMaterial="
+				+ menu_reqMaterial + ", menu_needlessMaterial=" + menu_needlessMaterial + ", menu_star=" + menu_star
+				+ ", menu_tag=" + menu_tag + ", menu_totalTime=" + menu_totalTime + ", menu_writer=" + menu_writer
+				+ ", menu_preferCnt=" + menu_preferCnt + ", menu_readCnt=" + menu_readCnt + "]";
 	}
+
 }

@@ -10,13 +10,7 @@ import com.dbsg.backend.domain.UserDisplay;
 public interface UserService {
 
 	//카카오 로그인 접근 토큰 받기
-	public Map<String,Object> getAccessToken(String code);
-	
-	//카카오 로그인 사용자 정보 요청
-	public Map<String,Object> getUserInfo(String accessToken);
-	
-	//해당 정보의 회원이 있는지 확인
-	public Map<String,Object> join(User user);
+	public Map<String,Object> kakaoLogin(String code);
 	
 	//닉네임 중복검사
 	public Map<String,Object> nicknameCheck(Map<String,Object> param);

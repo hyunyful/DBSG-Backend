@@ -17,12 +17,12 @@
 
 <button onClick="kakao()">카카오 로그인</button>
 <button onClick="naver()">네이버 로그인</button><br>
-<button onClick="location.href='/controller'">컨트롤러 정보 보기</button>
+<!-- <button onClick="location.href='/DBSG/controller'">컨트롤러 정보 보기</button> -->
 
 <script>
 function kakao(){
 	var appKey = "51c7c8f63345a28a25a4b28fff7048ef";
-	var redirect_uri = "http://15.165.215.38:8080/user/login/kakao";
+	var redirect_uri = "http://15.165.215.38:8080/DBSG/user/login/kakao";
 	//var redirect_uri = "http://localhost:8080/user/login/kakao";
 	
 	var uri = "https://kauth.kakao.com/oauth/authorize?"
@@ -40,14 +40,14 @@ function kakao(){
 function naver(){
 	//상태 토큰 생성 ajax
 	$.ajax({
-		url:"/naver/state",
+		url:"/DBSG/user/naverState",
 		type:"get",
 		success:function(result){
 			//console.log(result.state);
 			
 			var client_id = "m8QQGZXfACv5KdlFw8oI";
 			//var redirect_uri = "http://localhost:8080/user/login/naver";
-			var redirect_uri = "http://15.165.215.38:8080/user/login/naver";
+			var redirect_uri = "http://15.165.215.38:8080/DBSG/user/login/naver";
 			var state = result.state;
 			
 			//https://nid.naver.com/oauth2.0/authorize?client_id={클라이언트 아이디}&response_type=code&redirect_uri={개발자 센터에 등록한 콜백 URL(URL 인코딩)}&state={상태 토큰}

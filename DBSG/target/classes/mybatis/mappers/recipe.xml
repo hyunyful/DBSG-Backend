@@ -11,4 +11,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where menu_no = #{menu_no}
 	</select>
 
+	<!-- 해당 메뉴의 레시피 삭제 -->
+	<delete id="deleteRecipe" parameterType="java.lang.Integer">
+		delete from recipe
+		where menu_no=#{menu_no}
+	</delete>
 </mapper>

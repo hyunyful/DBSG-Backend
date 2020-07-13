@@ -24,4 +24,9 @@ public class RecipeDao {
 	public int readCnt(int menu_no) {
 		return sqlSession.update("menu.readCnt", menu_no);
 	}
+	
+	//해당 메뉴의 레시피 삭제
+	public int deleteRecipe(int menu_no) {
+		return sqlSession.delete("recipe.deleteRecipe", menu_no);
+	}
 }

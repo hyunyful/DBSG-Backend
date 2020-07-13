@@ -37,11 +37,15 @@ public class UserServiceImpl implements UserService {
 
 	//카카오 로그인 접근 토큰 받기
 	@Override
-	public Map<String,Object> getAccessToken(String code) {
+	public Map<String,Object> kakaoLogin(String code) {
 		Map<String,Object> map = new HashMap<>();
 		
 		String accessToken = "";		//모든 작업이 성공적으로 수행된 경우 리턴
 		String error = "";					//중간에 작업이 실패하는 경우 리턴
+		
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition(); 
+		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+		TransactionStatus status = tm.getTransaction(def); 
 		
 		//requestURI
 		String uri = "https://kauth.kakao.com/oauth/token";
@@ -61,7 +65,7 @@ public class UserServiceImpl implements UserService {
 			//grant_type은 authorization_code로 고정, client_id와 redirect_uri는 변경 가능하므로 변수로 설정, code는 매개변수
 			String client_id = "51c7c8f63345a28a25a4b28fff7048ef";
 			//String redirect_uri = "http://localhost:8080/user/login/kakao";
-			String redirect_uri = "http://15.165.215.38:8080/user/login/kakao";
+			String redirect_uri = "http://15.165.215.38:8080/DBSG/user/login/kakao";
 			
 			//전체 파라미터 (전송용)
 			String parameter = "grant_type=authorization_code&client_id="+client_id;
@@ -109,14 +113,181 @@ public class UserServiceImpl implements UserService {
 				//access_token 값을 map에 담아서 리턴
 				accessToken = data.getString("access_token");
 				
-				//System.out.println("accessToken는 "+accessToken);
+				//사용자 정보 받아오기
+				uri = "https://kapi.kakao.com/v2/user/me";		//변수 재활용
 				
-				map.put("accessToken", accessToken);
+				url = new URL(uri);
 				
-				return map;
+				con = (HttpURLConnection) url.openConnection();
+				
+				con.setRequestMethod("GET");
+				con.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+				con.setRequestProperty("Authorization","Bearer "+accessToken);
+				
+				con.connect();
+				
+				//결과 코드가 200이면 성공
+				resultCode = con.getResponseCode();
+				
+				//성공하면
+				if(resultCode == 200) {
+					input = new BufferedReader(new InputStreamReader(con.getInputStream()));
+					
+					//재활용 변수 초기화
+					line = "";
+					result = "";
+					
+					while(true) {
+						//결과 읽기
+						line = input.readLine();
+						
+						//만약 읽은 결과가 없으면
+						if(line == null) {
+							//반복문 나가기
+							break;
+						}
+						
+						//읽은 결과가 있으면 result에 붙여넣기
+						result = result + line;
+					}
+					
+					//stream 닫기
+					input.close();
+					
+					//System.out.println("result는 "+result);
+					
+					//읽은 결과 JSONObject로 파싱
+					data = new JSONObject(result);
+					JSONObject kakao_account = data.getJSONObject("kakao_account");
+					JSONObject properties = data.getJSONObject("properties");
+					
+					//필요한 사용자 정보
+					String profile_image = "";		//프로필 사진 url 정보
+					String email = "";					//이메일
+					String age_range = "";			//연령대
+					String birthday = "";				//생일
+					String gender = "";				//성별
+					int user_gender = 0;				//gender가 male이면 user_gender는 1, female이면 user_gender는 2
+					
+					//정보 추출할 때 해당 키가 없는 경우를 대비한 에러처리
+					//없으면 기본값 할당
+					
+					//profile_image가 있으면
+					if(properties.has("profile_image")) {
+						profile_image = properties.getString("profile_image");
+					}else {			//profile_image가 없으면 
+						profile_image = "default.png";
+					}
+					
+					//이메일이 있으면
+					if(kakao_account.has("email")) {
+						email = kakao_account.getString("email");
+					}else {			//없으면
+						email = "";
+					}
+					
+					//연령대
+					if(kakao_account.has("age_range")) {
+						age_range = kakao_account.getString("age_range");
+					}else {
+						age_range = "";
+					}
+
+					//생일
+					if(kakao_account.has("birthday")) {
+						birthday = kakao_account.getString("birthday");
+					}else {
+						birthday = "";
+					}
+
+					//성별
+					if(kakao_account.has("gender")) {
+						gender = kakao_account.getString("gender");
+						
+						//gender가 male이면 1 female이면 2
+						if("male".equals(gender)) {
+							user_gender = 1;
+						}else if("female".equals(gender)) {
+							user_gender = 2;
+						}
+						
+					}else {
+						user_gender = 0;
+					}
+					
+					//사용자 정보를 User 객체에 담아서 리턴
+					User user = new User();
+					user.setUser_image(profile_image);
+					user.setUser_email(email);
+					user.setUser_age(age_range);
+					user.setUser_birthday(birthday);
+					user.setUser_gender(user_gender);
+					user.setUser_type("kakao");
+					
+					//회원정보로 회원가입 작업
+					//1.해당 정보의 회원이 DB에 있는지 확인
+					//2.없으면 정보 insert 후 닉네임 필요하다고 보내기
+					//3.있으면 정보 보내주기
+					
+					UserDisplay ud = userDao.userCheck(user.getUser_email());
+					
+					//회원이 있으면
+					if(ud != null) {
+						//System.out.println("회원 정보가 있네");
+					
+						result = "exist";
+						
+						//있다는 말과 함께
+						map.put("result", result);
+						//회원 정보 보내주기
+						map.put("ud", ud);
+						
+						tm.commit(status);
+						return map;
+					}
+					//회원이 없으면
+					else {
+						//System.out.println("회원 정보가 없네");
+						
+						//2.해당 정보로 회원가입
+						int result1 = userDao.userJoin(user);
+						
+						//회원가입에 성공하면
+						if(result1 > 0) {
+							//3.닉네임이 필요하다는 것을 알려주기
+							result = "needNickname";
+							
+							//4.회원번호 찾아서 같이 리턴
+							int user_no = userDao.findNoByInfo(user.getUser_email());
+							
+							//System.out.println(user_no);
+							
+							map.put("result", result);
+							map.put("user_no", user_no);
+							
+							tm.commit(status);
+							return map;
+						}
+						//회원가입에 실패한 경우
+						else {
+							result = "error";
+							tm.rollback(status); 
+							map.put("result", result);
+							map.put("error", "회원가입에 실패");
+							return map;
+						}
+					}
+					
+					
+				}else {		//사용자 정보 불러오기의 resultCode가 200이 아니면
+					error = "통신 실패링2";
+					map.put("resultCode", resultCode);
+					map.put("error", error);
+					return map;
+				}
 				
 			}
-			//실패하면
+			//실패하면 (첫번째 resultCode가 200이 아니면)
 			else {
 				error = "통신 실패링1";
 				map.put("resultCode", resultCode);
@@ -127,246 +298,18 @@ public class UserServiceImpl implements UserService {
 			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
-			System.out.println("URL 만들기에 실패링1");
+			System.out.println("URL 만들기에 실패링");
 			error = e.getMessage();
 			map.put("error", error);
 			return map;
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("URLConnection에 실패링1");
+			System.out.println("URLConnection에 실패링");
 			error = e.getMessage();
 			map.put("error", error);
 			return map;
 		}
 		
-	}
-
-	//카카오 로그인 사용자 정보 요청
-	@Override
-	public Map<String, Object> getUserInfo(String accessToken) {
-		Map<String,Object> map = new HashMap<>();
-		
-		//작업에 실패하는 경우 반환되는 error 내용
-		String error = "";
-		
-		String uri = "https://kapi.kakao.com/v2/user/me";
-		
-		try {
-			URL url = new URL(uri);
-			
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			
-			con.setRequestMethod("GET");
-			con.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-			con.setRequestProperty("Authorization","Bearer "+accessToken);
-			
-			con.connect();
-			
-			//결과 코드가 200이면 성공
-			int resultCode = con.getResponseCode();
-			
-			//성공하면
-			if(resultCode == 200) {
-				BufferedReader input = new BufferedReader(new InputStreamReader(con.getInputStream()));
-				
-				//결과 한줄한줄을 읽을 문자열
-				String line = "";
-				//총 결과를 담을 문자열
-				String result = "";
-				
-				while(true) {
-					//결과 읽기
-					line = input.readLine();
-					
-					//만약 읽은 결과가 없으면
-					if(line == null) {
-						//반복문 나가기
-						break;
-					}
-					
-					//읽은 결과가 있으면 result에 붙여넣기
-					result = result + line;
-				}
-				
-				//stream 닫기
-				input.close();
-				
-				//System.out.println("result는 "+result);
-				
-				//읽은 결과 JSONObject로 파싱
-				JSONObject data = new JSONObject(result);
-				JSONObject kakao_account = data.getJSONObject("kakao_account");
-				JSONObject properties = data.getJSONObject("properties");
-				
-				//필요한 사용자 정보
-				String profile_image = "";		//프로필 사진 url 정보
-				String email = "";					//이메일
-				String age_range = "";			//연령대
-				String birthday = "";				//생일
-				String gender = "";				//성별
-				int user_gender = 0;				//gender가 male이면 user_gender는 1, female이면 user_gender는 2
-				
-				//정보 추출할 때 해당 키가 없는 경우를 대비한 에러처리
-				//없으면 기본값 할당
-				
-				//profile_image가 있으면
-				if(properties.has("profile_image")) {
-					profile_image = properties.getString("profile_image");
-				}else {			//profile_image가 없으면 
-					profile_image = "default.png";
-				}
-				
-				//이메일이 있으면
-				if(kakao_account.has("email")) {
-					email = kakao_account.getString("email");
-				}else {			//없으면
-					email = "";
-				}
-				
-				//연령대
-				if(kakao_account.has("age_range")) {
-					age_range = kakao_account.getString("age_range");
-				}else {
-					age_range = "";
-				}
-
-				//생일
-				if(kakao_account.has("birthday")) {
-					birthday = kakao_account.getString("birthday");
-				}else {
-					birthday = "";
-				}
-
-				//성별
-				if(kakao_account.has("gender")) {
-					gender = kakao_account.getString("gender");
-					
-					//gender가 male이면 1 female이면 2
-					if("male".equals(gender)) {
-						user_gender = 1;
-					}else if("female".equals(gender)) {
-						user_gender = 2;
-					}
-					
-				}else {
-					user_gender = 0;
-				}
-				
-				//사용자 정보를 User 객체에 담아서 리턴
-				User user = new User();
-				user.setUser_image(profile_image);
-				user.setUser_email(email);
-				user.setUser_age(age_range);
-				user.setUser_birthday(birthday);
-				user.setUser_gender(user_gender);
-				user.setUser_type("kakao");
-				
-				map.put("user", user);
-				
-				return map;
-				
-			}
-			//실패하면
-			else {
-				error = "통신 실패링2";
-				map.put("resultCode", resultCode);
-				map.put("error", error);
-				return map;
-			}
-			
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-			System.out.println("URL 만들기에 실패링2");
-			error = e.getMessage();
-			map.put("error", error);
-			return map;
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.out.println("URLConnection에 실패링2");
-			error = e.getMessage();
-			map.put("error", error);
-			return map;
-		}
-		
-	}
-
-	//회원 정보로 DB 작업
-	@Override
-	public Map<String,Object> join(User user) {		
-		Map<String,Object> map = new HashMap<>();		//리턴될 map
-		String result = "";			//exist, needNickname, error 중 하나를 저장할 변수
-		
-		DefaultTransactionDefinition def = new DefaultTransactionDefinition(); 
-		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-		TransactionStatus status = tm.getTransaction(def); 
-		
-		try {
-			
-			//1.해당 정보의 회원이 DB에 있는지 확인
-			//2.없으면 정보 insert 후 닉네임 필요하다고 보내기
-			//3.있으면 정보 보내주기
-			
-			//1.해당 정보의 회원이 DB에 있는지 확인
-			//정보는 user에 들어있음
-			//System.out.println(user.toString());
-			
-			UserDisplay ud = userDao.userCheck(user.getUser_email());
-			
-			//회원이 있으면
-			if(ud != null) {
-				//System.out.println("회원 정보가 있네");
-			
-				result = "exist";
-				
-				//있다는 말과 함께
-				map.put("result", result);
-				//회원 정보 보내주기
-				map.put("ud", ud);
-				
-				tm.commit(status);
-				return map;
-			}
-			//회원이 없으면
-			else {
-				//System.out.println("회원 정보가 없네");
-				
-				//2.해당 정보로 회원가입
-				int result1 = userDao.userJoin(user);
-				
-				//회원가입에 성공하면
-				if(result1 > 0) {
-					//3.닉네임이 필요하다는 것을 알려주기
-					result = "needNickname";
-					
-					//4.회원번호 찾아서 같이 리턴
-					int user_no = userDao.findNoByInfo(user.getUser_email());
-					
-					//System.out.println(user_no);
-					
-					map.put("result", result);
-					map.put("user_no", user_no);
-					
-					tm.commit(status);
-					return map;
-				}
-				//회원가입에 실패한 경우
-				else {
-					result = "error";
-					tm.rollback(status); 
-					map.put("result", result);
-					map.put("error", "회원가입에 실패");
-					return map;
-				}
-			}
-			
-		}catch(Exception e) {
-			e.printStackTrace(); 
-			map.put("result", "error");
-			map.put("error", e.getMessage());
-			tm.rollback(status); 
-			throw e; 
-		}
-
 	}
 
 	//닉네임 중복검사

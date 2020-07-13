@@ -55,4 +55,14 @@ public class MenuDao {
 	public List<MenuDisplay> searchMenuByTag(String tag){
 		return sqlSession.selectList("menu.searchMenuByTag", tag);
 	}
+	
+	//조회수로 메뉴 추천
+	public List<MenuDisplay> menuRecommendByreadCnt(){
+		return sqlSession.selectList("menu.menuRecommendByreadCnt");
+	}
+	
+	//menu_stat 테이블과 menu 테이블에서 해당 메뉴 번호 삭제
+	public int deleteMenu(int menu_no) {
+		return sqlSession.delete("menu.deleteMenu",menu_no);
+	}
 }
