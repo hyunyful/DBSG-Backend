@@ -1,10 +1,6 @@
 package com.dbsg.backend.service;
 
-import java.util.List;
 import java.util.Map;
-
-import com.dbsg.backend.domain.Menu;
-import com.dbsg.backend.domain.MenuDisplay;
 
 public interface MenuService {
 
@@ -25,4 +21,7 @@ public interface MenuService {
 	
 	//메뉴 삭제
 	public Map<String,Object> deleteMenu(int menu_no);
+	
+	//메뉴 별점
+	public Map<String,Object> menuStar(Map<String,Object> param);
 }

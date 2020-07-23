@@ -338,7 +338,7 @@ public class UserServiceImpl implements UserService {
 				nickname = json.getString("nickname");
 			}else {
 				map.put("nicknameCheck", "fail");
-				map.put("error", "nickname 없음");
+				map.put("error", "there is no nickname");
 				return map;
 			}
 			
@@ -346,7 +346,7 @@ public class UserServiceImpl implements UserService {
 				user_no = json.getInt("user_no");
 			}else {
 				map.put("nicknameCheck", "fail");
-				map.put("error", "user_no 없음");
+				map.put("error", "there is no user_no");
 				return map;
 			}
 			
@@ -371,7 +371,6 @@ public class UserServiceImpl implements UserService {
 				//닉네임 선점에 성공하면
 				if(r1>0) {
 					map.put("nicknameCheck", "success");
-					map.put("data", "success");
 					tm.commit(status);
 					return map;
 				}else {			//닉네임 설정에 실패하면
@@ -396,47 +395,45 @@ public class UserServiceImpl implements UserService {
 	public Map<String,Object> setNickname(Map<String, Object> param) {
 		Map<String,Object> map = new HashMap<>();
 		
-		String result = "";
-		
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition(); 
 		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
 		TransactionStatus status = tm.getTransaction(def); 
 		
-		//json 파싱
-		JSONObject data = new JSONObject(param);
-		
-		String nickname = "";
-		int user_no = 0;
-		
-		//정보 추출
-		if(data.has("nickname")) {
-			nickname = data.getString("nickname");
-		}else {
-			nickname = "";
-		}
-		
-		if(data.has("user_no")) {
-			user_no = Integer.parseInt(data.getString("user_no"));
-		}else {
-			user_no = 0;
-		}
-		
-		map.put("sendNickname", nickname);
-		map.put("sendUser_no", user_no);
-		
-		User user = new User();
-		user.setUser_nickname(nickname);
-		user.setUser_no(user_no);
-		
 		try {
 			
-			//dao 호출
-			int result2 = userDao.setNickname(user);
+			//json 파싱
+			JSONObject data = new JSONObject(param);
 			
-			//System.out.println(result2);
+			String nickname = "";
+			int user_no = 0;
+			
+			//정보 추출
+			//뭐 하나라도 없으면 return
+			if(data.has("nickname")) {
+				nickname = data.getString("nickname");
+			}else {
+				map.put("setNickname", "fail");
+				map.put("error", "there is no nickname value");
+				return map;
+			}
+			
+			if(data.has("user_no")) {
+				user_no = data.getInt("user_no");
+			}else {
+				map.put("setNickname", "fail");
+				map.put("error", "there is no user_no value");
+				return map;
+			}
+			
+			User user = new User();
+			user.setUser_nickname(nickname);
+			user.setUser_no(user_no);
+			
+			//dao 호출
+			int result = userDao.setNickname(user);
 			
 			//닉네임 설정에 성공하면
-			if(result2 > 0) {
+			if(result > 0) {
 				
 				//System.out.println("성공쓰");
 				
@@ -445,35 +442,33 @@ public class UserServiceImpl implements UserService {
 				
 				//회원이 있으면
 				if(ud != null) {
-					map.put("ud", ud);
-					
-					result = "success";
+					map.put("setNickname", "success");
+					map.put("data", ud);
 				}
 				//회원이 없으면
 				else {
 					//System.out.println("회원없쓰");
-					
-					result = "fail";
+					map.put("setNickname", "fail");
+					map.put("error", "there is no user..!");
 				}
 				
 			}
 			//닉네임 설정에 실패하면
 			else {
 				//System.out.println("실패쓰");
-				
-				result = "fail";
+				map.put("setNickname", "fail");
+				map.put("error", "setNickname fail");
 			}
 			
 		}catch(Exception e) {
 			e.printStackTrace();
 			tm.rollback(status);
-			result = "error";
+			map.put("setNickname", "fail");
+			map.put("error", e.getMessage());
 			throw e;
 		}
 		
 		tm.commit(status);
-		
-		map.put("result", result);
 		
 		return map;
 	}

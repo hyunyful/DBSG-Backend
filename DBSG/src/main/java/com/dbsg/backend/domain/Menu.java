@@ -4,8 +4,7 @@ public class Menu {
  
 	 private int menu_no;
 	 private String menu_name;
-	 private String menu_writer;
-	 private int menu_category;
+	 private String user_nickname;
 	 private String menu_tag;
 	 private String menu_reqMaterial;
 	 private String menu_needlessMaterial;
@@ -19,7 +18,6 @@ public class Menu {
 	 private int menu_readCnt;
 	 private String etc;
 	 
-	
 	public int getMenu_no() {
 		return menu_no;
 	}
@@ -32,11 +30,11 @@ public class Menu {
 	public void setMenu_name(String menu_name) {
 		this.menu_name = menu_name;
 	}
-	public String getMenu_writer() {
-		return menu_writer;
+	public String getUser_nickname() {
+		return user_nickname;
 	}
-	public void setMenu_writer(String menu_writer) {
-		this.menu_writer = menu_writer;
+	public void setUser_nickname(String user_nickname) {
+		this.user_nickname = user_nickname;
 	}
 	public String getMenu_tag() {
 		return menu_tag;
@@ -113,21 +111,15 @@ public class Menu {
 	public void setMenu_no(Integer menu_no) {
 		this.menu_no = menu_no;
 	}
-	public int getMenu_category() {
-		return menu_category;
-	}
-	public void setMenu_category(int menu_category) {
-		this.menu_category = menu_category;
-	}
 	
 	@Override
 	public String toString() {
-		return "Menu [menu_no=" + menu_no + ", menu_name=" + menu_name + ", menu_writer=" + menu_writer
-				+ ", menu_category=" + menu_category + ", menu_tag=" + menu_tag + ", menu_reqMaterial="
-				+ menu_reqMaterial + ", menu_needlessMaterial=" + menu_needlessMaterial + ", menu_description="
-				+ menu_description + ", menu_image=" + menu_image + ", menu_kids=" + menu_kids + ", menu_totalTime="
-				+ menu_totalTime + ", menu_delete=" + menu_delete + ", menu_star=" + menu_star + ", menu_preferCnt="
-				+ menu_preferCnt + ", menu_readCnt=" + menu_readCnt + ", etc=" + etc + "]";
+		return "Menu [menu_no=" + menu_no + ", menu_name=" + menu_name + ", user_nickname=" + user_nickname
+				+ ", menu_tag=" + menu_tag + ", menu_reqMaterial=" + menu_reqMaterial + ", menu_needlessMaterial="
+				+ menu_needlessMaterial + ", menu_description=" + menu_description + ", menu_image=" + menu_image
+				+ ", menu_kids=" + menu_kids + ", menu_totalTime=" + menu_totalTime + ", menu_delete=" + menu_delete
+				+ ", menu_star=" + menu_star + ", menu_preferCnt=" + menu_preferCnt + ", menu_readCnt=" + menu_readCnt
+				+ ", etc=" + etc + "]";
 	}
-	
+
 }

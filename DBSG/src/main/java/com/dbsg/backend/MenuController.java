@@ -1,11 +1,8 @@
 package com.dbsg.backend;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dbsg.backend.domain.Menu;
-import com.dbsg.backend.domain.MenuDisplay;
 import com.dbsg.backend.service.MenuService;
 
 import io.swagger.annotations.ApiImplicitParam;
@@ -31,7 +26,6 @@ public class MenuController {
 	
 	//메뉴,레시피 등록
 	@ApiOperation(value="메뉴/레시피 등록")
-	//@PostMapping("/menu/insert")
 	@PostMapping("/insert")
 	public Map<String,Object> menuInsert(@RequestBody Map<String,Object> param){
 		Map<String,Object> map = new HashMap<>();		//리턴될 map
@@ -45,7 +39,6 @@ public class MenuController {
 	
 	//전체 메뉴 조회
 	@ApiOperation(value="전체 메뉴 조회")
-	//@GetMapping("/menu/list")
 	@GetMapping("/list")
 	public Map<String,Object> menuList(){
 		Map<String,Object> map = new HashMap<>();
@@ -64,7 +57,7 @@ public class MenuController {
 											dataType = "string", paramType = "path", defaultValue = "")
 			}
 	)
-	//@GetMapping("/menu/search/{word}")
+
 	@GetMapping("/search/{word}")
 	public Map<String,Object> stringSearch(@PathVariable String word){
 		Map<String,Object> map = new HashMap<>();
@@ -84,7 +77,6 @@ public class MenuController {
 											dataType = "int", paramType = "path", defaultValue = "")
 			}
 	)
-	//@GetMapping("/menu/tag/{tagNo}")
 	@GetMapping("/tag/{tagNo}")
 	public Map<String,Object> tagSearch(@PathVariable int tagNo){
 		Map<String,Object> map = new HashMap<>();
@@ -105,6 +97,8 @@ public class MenuController {
 		
 		map = menuService.menuRecommendByreadCnt();
 		
+		map.put("con", "success");
+		
 		return map;
 	}
 	
@@ -119,6 +113,15 @@ public class MenuController {
 		
 		map.put("con", "success");
 		map.put("sendData", menu_no);
+		
+		return map;
+	}
+	
+	@PostMapping("/star")
+	public Map<String,Object> menuStar(@RequestBody Map<String,Object> param){
+		Map<String,Object> map = new HashMap<>();
+		
+		
 		
 		return map;
 	}

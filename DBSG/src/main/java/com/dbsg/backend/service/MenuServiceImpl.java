@@ -82,7 +82,7 @@ public class MenuServiceImpl implements MenuService {
 			String menu_reqMaterial = "";						//필수 재료
 			String menu_needlessMaterial = "";				//선택 재료
 			String menu_description = "";						//매뉴 설명
-			String menu_kids = "";									//키즈 여부
+			String menu_kids = "N";								//키즈 여부
 			String menu_image = "";								//메뉴 사진
 			int menu_totalTime = 0;								//전체 소요 시간
 			
@@ -90,7 +90,7 @@ public class MenuServiceImpl implements MenuService {
 				menu_name = menuJson.getString("menu_name");
 			}else {
 				map.put("menuInsert", "fail");
-				map.put("error", "menu_name 없음");
+				map.put("error", "there is no menu_name");
 				return map;
 			}
 			
@@ -98,7 +98,7 @@ public class MenuServiceImpl implements MenuService {
 				menu_tag = menuJson.getString("menu_tag");
 			}else {
 				map.put("menuInsert", "fail");
-				map.put("error", "menu_tag 없음");
+				map.put("error", "there is no menu_tag");
 				return map;
 			}
 			
@@ -106,59 +106,41 @@ public class MenuServiceImpl implements MenuService {
 				menu_reqMaterial = menuJson.getString("menu_reqMaterial");
 			}else {
 				map.put("menuInsert", "fail");
-				map.put("error", "menu_reqMaterial 없음");
+				map.put("error", "there is no menu_reqMaterial");
 				return map;
 			}
 			
 			if(menuJson.has("menu_needlessMaterial")) {
 				menu_needlessMaterial = menuJson.getString("menu_needlessMaterial");
-			}else {
-				map.put("menuInsert", "fail");
-				map.put("error", "menu_needlessMaterial 없음");
-				return map;
 			}
 			
 			if(menuJson.has("menu_description")) {
 				menu_description = menuJson.getString("menu_description");
-			}else {
-				map.put("menuInsert", "fail");
-				map.put("error", "menu_description 없음");
-				return map;
 			}
 			
 			if(menuJson.has("menu_kids")) {
 				menu_kids = menuJson.getString("menu_kids");
-			}else {
-				map.put("menuInsert", "fail");
-				map.put("error", "menu_kids 없음");
-				return map;
 			}
 			
 			if(menuJson.has("menu_image")) {
 				menu_image = menuJson.getString("menu_image");
-			}else {
-				map.put("menuInsert", "fail");
-				map.put("error", "menu_image 없음");
-				return map;
 			}
 			
 			if(menuJson.has("menu_totalTime")) {
 				menu_totalTime = menuJson.getInt("menu_totalTime");
 			}else {
 				map.put("menuInsert", "fail");
-				map.put("error", "menu_totalTime 없음");
+				map.put("error", "there is no menu_totalTime");
 				return map;
 			}
 			
 			//고정값
-			String menu_writer = "admin";
-			int menu_category = 0;
+			String user_nickname = "admin";
 			
 			//1-2.MENU 객체에 정보 등록
 			Menu menu = new Menu();
 			menu.setMenu_name(menu_name);
-			menu.setMenu_writer(menu_writer);
-			menu.setMenu_category(menu_category);
+			menu.setUser_nickname(user_nickname);
 			menu.setMenu_tag(menu_tag);
 			menu.setMenu_reqMaterial(menu_reqMaterial);
 			menu.setMenu_needlessMaterial(menu_needlessMaterial);
@@ -167,7 +149,7 @@ public class MenuServiceImpl implements MenuService {
 			menu.setMenu_image(menu_image);
 			menu.setMenu_totalTime(menu_totalTime);
 			
-			System.out.println("menu "+menu.toString());
+			//System.out.println("menu "+menu.toString());
 			
 			//1-3.메뉴 등록
 			int result1 = menuDao.menuInsert(menu);
@@ -205,11 +187,11 @@ public class MenuServiceImpl implements MenuService {
 								JSONObject recipeJson = recipeArr.getJSONObject(i);
 								
 								//레시피 정보 추출
-								int recipe_processNo;		//레시피 순서
-								String recipe_action;			//레시피 내용
-								int recipe_fire;					//불세기
-								int recipe_reqTime;			//해당 작업을 하는데 필요한 시간
-								String recipe_image;			//레시피 사진
+								int recipe_processNo;						//레시피 순서
+								String recipe_action;							//레시피 내용
+								int recipe_fire = 0;							//불세기
+								int recipe_reqTime = 0;						//해당 작업을 하는데 필요한 시간
+								String recipe_image = "";					//레시피 사진
 								
 								
 								if(recipeJson.has("recipe_processNo")) {
@@ -230,24 +212,14 @@ public class MenuServiceImpl implements MenuService {
 								
 								if(recipeJson.has("recipe_fire")) {
 									recipe_fire = recipeJson.getInt("recipe_fire");
-								}else {
-									map.put("menuInsert", "fail");
-									map.put("error", "recipe_fire 없음");
-									return map;
 								}
 								
 								if(recipeJson.has("recipe_reqTime")) {
 									recipe_reqTime = recipeJson.getInt("recipe_reqTime");
-								}else {
-									map.put("menuInsert", "fail");
-									map.put("error", "recipe_reqTime 없음");
-									return map;
 								}
 								
 								if(recipeJson.has("recipe_image")) {
 									recipe_image = recipeJson.getString("recipe_image");
-								}else {
-									recipe_image = "";
 								}
 								
 								//Recipe 객체에 담기
@@ -258,7 +230,7 @@ public class MenuServiceImpl implements MenuService {
 								recipe.setRecipe_reqTime(recipe_reqTime);
 								recipe.setRecipe_image(recipe_image);
 								
-								System.out.println("recipe "+recipe.toString());
+								//System.out.println("recipe "+recipe.toString());
 								
 								//dao호출
 								menuDao.recipeInsert(recipe);
@@ -343,6 +315,9 @@ public class MenuServiceImpl implements MenuService {
 		List<MenuDisplay> list = new ArrayList<>();
 		List<Integer> noList = new ArrayList<>();
 		
+		//받아온 keyword를 like 구문에 맞춰서 바꾸고 dao에 넣기
+		//keyword에 있는 공백 무시, 특수문자 무시
+		
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition(); 
 		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
 		TransactionStatus status = tm.getTransaction(def); 
@@ -357,7 +332,7 @@ public class MenuServiceImpl implements MenuService {
 			
 			//like 구문에 맞게 모양 내기
 			String keyword = "%"+word+"%";
-			//System.out.println("최종 db에 들어갈 값은 "+menu_name);
+			//System.out.println("최종 db에 들어갈 값은 "+keyword);
 			
 			//해당 키워드가 이름, 설명, 필수재료에 있는 메뉴의 번호만 찾아오기
 			noList = menuDao.searchMenuNoByString(keyword);
@@ -484,46 +459,27 @@ public class MenuServiceImpl implements MenuService {
 	public Map<String, Object> deleteMenu(int menu_no) {
 		Map<String,Object> map = new HashMap<>();
 		
-		//레시피 삭제 후 menu_stat 테이블과 menu 테이블에서 삭제
-		//recipe, menu_stat 테이블의 menu_no이 menu 테이블의 menu_no과 외래키이기 때문
+		//외래키 설정으로 menu 테이블에서 지우면 다 지워짐
+		int result = menuDao.deleteMenu(menu_no);
 		
-		DefaultTransactionDefinition def = new DefaultTransactionDefinition(); 
-		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-		TransactionStatus status = tm.getTransaction(def); 
-		
-		try {
-			
-			//레시피 삭제
-			int r1 = recipeDao.deleteRecipe(menu_no);
-			
-			//레시피 삭제에 성공하면
-			if(r1>0) {
-				//메뉴 삭제
-				int r2 = menuDao.deleteMenu(menu_no);
-				
-				//메뉴 삭제에 성공하면
-				if(r2>0) {
-					map.put("deleteMenu", "success");
-				}else {				//메뉴 삭제에 실패하면
-					map.put("deleteMenu", "fail");
-					map.put("error", "menu doesn't deleted...");
-					tm.rollback(status);
-				}
-						
-			}else {			//레시피 삭제에 실패하면
-				map.put("deleteMenu", "fail");
-				map.put("error", "recipe doesn't deleted...");
-				tm.rollback(status);
-			}
-			
-		}catch(Exception e) {
-			e.printStackTrace();
+		//성공하면
+		if(result>0) {
+			map.put("deleteMenu", "success");
+		}else {		//실패하면
 			map.put("deleteMenu", "fail");
-			map.put("error", e.getMessage());
-			throw e;
 		}
 		
-		tm.commit(status);
+		return map;
+	}
+
+	//메뉴 별점
+	@Override
+	public Map<String, Object> menuStar(Map<String, Object> param) {
+		Map<String, Object> map = new HashMap<>();
+		
+		//1.데이터 파싱
+		//1-1.필요 데이터 : 메뉴 번호, 해당 메뉴의 현재 별점, 추가될 별점
+		
 		
 		return map;
 	}

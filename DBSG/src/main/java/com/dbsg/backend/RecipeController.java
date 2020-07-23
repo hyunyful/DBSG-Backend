@@ -28,7 +28,6 @@ public class RecipeController {
 
 	//해당 메뉴의 상세정보 및 전체 레시피 조회
 	@ApiOperation(value="해당 메뉴의 상세정보 및 전체 레시피 조회")
-	//@GetMapping("/recipe/{menu_no}")
 	@ApiImplicitParams(
 			{@ApiImplicitParam(name = "menu_no", value = "메뉴 번호", required = true, 
 											dataType = "int", paramType = "path", defaultValue = "")
@@ -45,4 +44,6 @@ public class RecipeController {
 		
 		return map;
 	}
+	
+	
 }
