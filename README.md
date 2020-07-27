@@ -10,7 +10,7 @@
 5.SNS 로그인 (카카오, 네이버)
 
 **테이블 생성 Query**
->회원정보를 저장할 USER 테이블
+1.회원정보를 저장할 USER 테이블
 create table user(
 user_no bigint auto_increment comment '회원번호',
 user_email varchar(50) not null comment '회원이메일',
