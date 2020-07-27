@@ -27,3 +27,4 @@ etc text comment '여분컬럼',
 primary key(user_no,user_nickname)    
 )default character set=utf8;    
 </code>
+\\나오나?
