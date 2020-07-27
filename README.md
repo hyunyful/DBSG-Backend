@@ -100,6 +100,6 @@ foreign key(menu_no) references menu(menu_no) on delete cascade
 </code>
 </pre>
 
-**타 팀원의 Github**
+**타 팀원의 Github**     
 어플 담당     
 <https://github.com/yh-park02/DBSG_Project>
