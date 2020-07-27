@@ -9,7 +9,8 @@
 4.타이머의 시간은 임의로 사용자가 조정 가능    
 5.SNS 로그인 (카카오, 네이버)    
 
-**테이블 생성 Query**    
+**테이블 생성 Query**    \
+<pre>
 <code>
 1.회원정보를 저장할 USER 테이블    
 create table user(    
@@ -27,3 +28,4 @@ etc text comment '여분컬럼',
 primary key(user_no,user_nickname)    
 )default character set=utf8;    
 </code>
+</pre>
