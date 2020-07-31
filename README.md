@@ -11,8 +11,8 @@ http://15.165.215.38:8080/DBSG/
 **사용 기술**      
 1.언어:JAVA(Spring Framework)     
 2.DB:MySQL     
-3.WAS:Apache Tomcat     
-   
+3.Server:WAS(Centos7)     
+
    
 **어플 주요 기능**    
 1.레시피 열람 가능    
