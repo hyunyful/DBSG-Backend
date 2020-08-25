@@ -182,21 +182,6 @@ http://15.165.215.38:8080/DBSG/menu/recommend
     "con": "success",
     "data": [
         {
-            "menu_no": 1,
-            "menu_name": "첫 메뉴",
-            "menu_image": null,
-            "menu_description": "ㅁㄴㅅㅁ",
-            "menu_category": 0,
-            "menu_reqMaterial": "ㅍㅅㅈㄹ",
-            "menu_needlessMaterial": "ㅅㅌㅈㄹ",
-            "menu_star": 0.0,
-            "menu_tag": "1,2,3",
-            "menu_totalTime": 180,
-            "menu_writer": null,
-            "menu_preferCnt": 0,
-            "menu_readCnt": 36
-        },
-        {
             "menu_no": 2,
             "menu_name": "메뉴2",
             "menu_image": "",
@@ -208,8 +193,23 @@ http://15.165.215.38:8080/DBSG/menu/recommend
             "menu_tag": "11,28,42",
             "menu_totalTime": 540,
             "menu_writer": null,
-            "menu_preferCnt": 0,
-            "menu_readCnt": 30
+            "menu_preferCnt": 30,
+            "menu_readCnt": 50
+        },
+        {
+            "menu_no": 1,
+            "menu_name": "첫 메뉴",
+            "menu_image": null,
+            "menu_description": "ㅁㄴㅅㅁ",
+            "menu_category": 0,
+            "menu_reqMaterial": "ㅍㅅㅈㄹ",
+            "menu_needlessMaterial": "ㅅㅌㅈㄹ",
+            "menu_star": 0.0,
+            "menu_tag": "1,2,3",
+            "menu_totalTime": 180,
+            "menu_writer": null,
+            "menu_preferCnt": 10,
+            "menu_readCnt": 36
         },
         {
             "menu_no": 3,
@@ -223,7 +223,7 @@ http://15.165.215.38:8080/DBSG/menu/recommend
             "menu_tag": "17,5,37",
             "menu_totalTime": 600,
             "menu_writer": null,
-            "menu_preferCnt": 0,
+            "menu_preferCnt": 17,
             "menu_readCnt": 12
         }
     ],
@@ -250,21 +250,6 @@ http://15.165.215.38:8080/DBSG/prefer/recommend
     "con": "success",
     "data": [
         {
-            "menu_no": 1,
-            "menu_name": "첫 메뉴",
-            "menu_image": null,
-            "menu_description": "ㅁㄴㅅㅁ",
-            "menu_category": 0,
-            "menu_reqMaterial": "ㅍㅅㅈㄹ",
-            "menu_needlessMaterial": null,
-            "menu_star": 0.0,
-            "menu_tag": "1,2,3",
-            "menu_totalTime": 180,
-            "menu_writer": null,
-            "menu_preferCnt": 0,
-            "menu_readCnt": 36
-        },
-        {
             "menu_no": 2,
             "menu_name": "메뉴2",
             "menu_image": "",
@@ -276,7 +261,7 @@ http://15.165.215.38:8080/DBSG/prefer/recommend
             "menu_tag": "11,28,42",
             "menu_totalTime": 540,
             "menu_writer": null,
-            "menu_preferCnt": 0,
+            "menu_preferCnt": 30,
             "menu_readCnt": 30
         },
         {
@@ -291,8 +276,23 @@ http://15.165.215.38:8080/DBSG/prefer/recommend
             "menu_tag": "17,5,37",
             "menu_totalTime": 600,
             "menu_writer": null,
-            "menu_preferCnt": 0,
+            "menu_preferCnt": 17,
             "menu_readCnt": 12
+        },
+        {
+            "menu_no": 1,
+            "menu_name": "첫 메뉴",
+            "menu_image": null,
+            "menu_description": "ㅁㄴㅅㅁ",
+            "menu_category": 0,
+            "menu_reqMaterial": "ㅍㅅㅈㄹ",
+            "menu_needlessMaterial": null,
+            "menu_star": 0.0,
+            "menu_tag": "1,2,3",
+            "menu_totalTime": 180,
+            "menu_writer": null,
+            "menu_preferCnt": 10,
+            "menu_readCnt": 36
         }
     ],
     "size": 3,
