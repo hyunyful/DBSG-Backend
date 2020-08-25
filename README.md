@@ -24,24 +24,349 @@ http://15.165.215.38:8080/DBSG/
 
 
 **Backend에 진행되어져 있는 기능**    
-1.메뉴/레시피 등록    
+1.메뉴/레시피 등록      
+
 2.전체 메뉴 조회     
 http://15.165.215.38:8080/DBSG/menu/list     
+<pre>
+<code>
+{
+    "menuList": "success",
+    "con": "success",
+    "size": 3,
+    "data": [
+        {
+            "menu_no": 1,
+            "menu_name": "첫 메뉴",
+            "menu_image": null,
+            "menu_description": "ㅁㄴㅅㅁ",
+            "menu_category": 0,
+            "menu_reqMaterial": "ㅍㅅㅈㄹ",
+            "menu_needlessMaterial": "ㅅㅌㅈㄹ",
+            "menu_star": 0.0,
+            "menu_tag": "1,2,3",
+            "menu_totalTime": 180,
+            "menu_writer": null,
+            "menu_preferCnt": 0,
+            "menu_readCnt": 36
+        },
+        {
+            "menu_no": 2,
+            "menu_name": "메뉴2",
+            "menu_image": "",
+            "menu_description": "",
+            "menu_category": 0,
+            "menu_reqMaterial": "공기",
+            "menu_needlessMaterial": "",
+            "menu_star": 0.0,
+            "menu_tag": "11,28,42",
+            "menu_totalTime": 540,
+            "menu_writer": null,
+            "menu_preferCnt": 0,
+            "menu_readCnt": 30
+        },
+        {
+            "menu_no": 3,
+            "menu_name": "메뉴3",
+            "menu_image": "",
+            "menu_description": "",
+            "menu_category": 0,
+            "menu_reqMaterial": "산소",
+            "menu_needlessMaterial": "마우스",
+            "menu_star": 0.0,
+            "menu_tag": "17,5,37",
+            "menu_totalTime": 600,
+            "menu_writer": null,
+            "menu_preferCnt": 0,
+            "menu_readCnt": 12
+        }
+    ]
+}
+</code>
+</pre>
+
 3.문자열로 메뉴 검색    
+검색한 문자열을 메뉴 이름, 메뉴 설명, 필요재료에서 검색해서 해당되는 메뉴 출력          
 http://15.165.215.38:8080/DBSG/menu/search/%EC%B2%AB      
+#데이터가 존재하는 경우
+<pre>
+<code>
+{
+    "menuList": "success",
+    "con": "success",
+    "data": [
+        {
+            "menu_no": 1,
+            "menu_name": "첫 메뉴",
+            "menu_image": null,
+            "menu_description": "ㅁㄴㅅㅁ",
+            "menu_category": 0,
+            "menu_reqMaterial": "ㅍㅅㅈㄹ",
+            "menu_needlessMaterial": "ㅅㅌㅈㄹ",
+            "menu_star": 0.0,
+            "menu_tag": "1,2,3",
+            "menu_totalTime": 180,
+            "menu_writer": null,
+            "menu_preferCnt": 0,
+            "menu_readCnt": 36
+        }
+    ],
+    "size": 1,
+    "keyword": "첫"
+}
+</code>
+</pre>
+#데이터가 존재하지 않는 경우
+<pre>
+<code>
+{
+    "menuList": "success",
+    "con": "success",
+    "data": [],
+    "size": 0,
+    "keyword": "뷁"
+}
+</code>
+</pre>                  
+
 4.태그번호로 메뉴 검색    
+입력한 태그번호를 가진 메뉴만 출력           
 http://15.165.215.38:8080/DBSG/menu/tag/11      
+#존재하는 태그로 검색 시 (1)
+<pre>
+<code>
+{
+    "con": "success",
+    "size": 1,
+    "data": [
+        {
+            "menu_no": 1,
+            "menu_name": "첫 메뉴",
+            "menu_image": null,
+            "menu_description": "ㅁㄴㅅㅁ",
+            "menu_category": 0,
+            "menu_reqMaterial": "ㅍㅅㅈㄹ",
+            "menu_needlessMaterial": null,
+            "menu_star": 0.0,
+            "menu_tag": "1,2,3",
+            "menu_totalTime": 180,
+            "menu_writer": null,
+            "menu_preferCnt": 0,
+            "menu_readCnt": 36
+        }
+    ],
+    "tagSearch": "success",
+    "keyword": 1
+}
+</code>
+</pre>       
+#존재하지 않는 태그로 검색시 (100)  
+<pre>
+<code>
+{
+    "con": "success",
+    "size": 0,
+    "data": [],
+    "tagSearch": "success",
+    "keyword": 100
+}
+</code>
+</pre>              
+
 5.조회수가 많은 메뉴 추천    
+전체메뉴 중에서 조회수(readCnt)가 높은 순서대로 3개          
 http://15.165.215.38:8080/DBSG/menu/recommend      
+<pre>
+<code>
+{
+    "con": "success",
+    "data": [
+        {
+            "menu_no": 1,
+            "menu_name": "첫 메뉴",
+            "menu_image": null,
+            "menu_description": "ㅁㄴㅅㅁ",
+            "menu_category": 0,
+            "menu_reqMaterial": "ㅍㅅㅈㄹ",
+            "menu_needlessMaterial": "ㅅㅌㅈㄹ",
+            "menu_star": 0.0,
+            "menu_tag": "1,2,3",
+            "menu_totalTime": 180,
+            "menu_writer": null,
+            "menu_preferCnt": 0,
+            "menu_readCnt": 36
+        },
+        {
+            "menu_no": 2,
+            "menu_name": "메뉴2",
+            "menu_image": "",
+            "menu_description": "",
+            "menu_category": 0,
+            "menu_reqMaterial": "공기",
+            "menu_needlessMaterial": "",
+            "menu_star": 0.0,
+            "menu_tag": "11,28,42",
+            "menu_totalTime": 540,
+            "menu_writer": null,
+            "menu_preferCnt": 0,
+            "menu_readCnt": 30
+        },
+        {
+            "menu_no": 3,
+            "menu_name": "메뉴3",
+            "menu_image": "",
+            "menu_description": "",
+            "menu_category": 0,
+            "menu_reqMaterial": "산소",
+            "menu_needlessMaterial": "마우스",
+            "menu_star": 0.0,
+            "menu_tag": "17,5,37",
+            "menu_totalTime": 600,
+            "menu_writer": null,
+            "menu_preferCnt": 0,
+            "menu_readCnt": 12
+        }
+    ],
+    "size": 3,
+    "readCntRecommend": "success"
+}
+</code>
+</pre>            
+
 6.메뉴 삭제    
-7.(로그인 회원)메뉴 즐겨찾기에 등록    
-8.(로그인 회원)즐겨찾기 한 메뉴 삭제    
-9.즐겨찾기 수가 많은 메뉴 추천    
+메뉴 번호로 해당 메뉴를 삭제        
+실제로 DB에서 삭제하지는 않고 나타나지 않게 처리        
+
+7.(로그인 회원)메뉴 즐겨찾기에 등록         
+
+8.(로그인 회원)즐겨찾기 한 메뉴 삭제          
+
+9.즐겨찾기 수가 많은 메뉴 추천     
+전체 메뉴 중 즐겨찾기 수(preferCnt)가 가장 많은 메뉴 3개 
 http://15.165.215.38:8080/DBSG/prefer/recommend      
+<pre>
+<code>
+{
+    "con": "success",
+    "data": [
+        {
+            "menu_no": 1,
+            "menu_name": "첫 메뉴",
+            "menu_image": null,
+            "menu_description": "ㅁㄴㅅㅁ",
+            "menu_category": 0,
+            "menu_reqMaterial": "ㅍㅅㅈㄹ",
+            "menu_needlessMaterial": null,
+            "menu_star": 0.0,
+            "menu_tag": "1,2,3",
+            "menu_totalTime": 180,
+            "menu_writer": null,
+            "menu_preferCnt": 0,
+            "menu_readCnt": 36
+        },
+        {
+            "menu_no": 2,
+            "menu_name": "메뉴2",
+            "menu_image": "",
+            "menu_description": "",
+            "menu_category": 0,
+            "menu_reqMaterial": "공기",
+            "menu_needlessMaterial": null,
+            "menu_star": 0.0,
+            "menu_tag": "11,28,42",
+            "menu_totalTime": 540,
+            "menu_writer": null,
+            "menu_preferCnt": 0,
+            "menu_readCnt": 30
+        },
+        {
+            "menu_no": 3,
+            "menu_name": "메뉴3",
+            "menu_image": "",
+            "menu_description": "",
+            "menu_category": 0,
+            "menu_reqMaterial": "산소",
+            "menu_needlessMaterial": null,
+            "menu_star": 0.0,
+            "menu_tag": "17,5,37",
+            "menu_totalTime": 600,
+            "menu_writer": null,
+            "menu_preferCnt": 0,
+            "menu_readCnt": 12
+        }
+    ],
+    "size": 3,
+    "preferRecommend": "success"
+}
+</code>
+</pre>             
+
 10.해당 메뉴의 상세 정보 및 레시피 내용 조회    
+메뉴 번호로 해당 메뉴의 레시피와 해당 메뉴의 상세정보 조회                 
 http://15.165.215.38:8080/DBSG/recipe/1      
+#존재하는 메뉴
+<pre>
+<code>
+{
+    "con": "success",
+    "data": {
+        "menuInfo": {
+            "menu_no": 1,
+            "menu_name": "첫 메뉴",
+            "menu_image": null,
+            "menu_description": "ㅁㄴㅅㅁ",
+            "menu_category": 0,
+            "menu_reqMaterial": "ㅍㅅㅈㄹ",
+            "menu_needlessMaterial": "ㅅㅌㅈㄹ",
+            "menu_star": 0.0,
+            "menu_tag": "1,2,3",
+            "menu_totalTime": 180,
+            "menu_writer": null,
+            "menu_preferCnt": 0,
+            "menu_readCnt": 35
+        },
+        "recipe": [
+            {
+                "recipe_no": 1,
+                "menu_no": 1,
+                "recipe_processNo": 1,
+                "recipe_action": "순서1",
+                "recipe_fire": 0,
+                "recipe_reqTime": 60,
+                "recipe_image": null
+            },
+            {
+                "recipe_no": 2,
+                "menu_no": 1,
+                "recipe_processNo": 2,
+                "recipe_action": "순서2",
+                "recipe_fire": 2,
+                "recipe_reqTime": 120,
+                "recipe_image": null
+            }
+        ]
+    },
+    "size": 2,
+    "recipe": "success",
+    "keyword": 1
+}
+</code>
+</pre>
+#존재하지 않는 메뉴
+<pre>
+<code>
+{
+    "con": "success",
+    "recipe": "fail",
+    "error": "Invalid menu_no",
+    "keyword": 100
+}
+</code>
+</pre>                  
+
 11.카카오톡 로그인 API        
-http://15.165.215.38:8080/DBSG       
+http://15.165.215.38:8080/DBSG        
+
 12.네이버 아이디로 로그인 API    
 http://15.165.215.38:8080/DBSG      
 
