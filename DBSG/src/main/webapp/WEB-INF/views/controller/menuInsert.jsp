@@ -11,10 +11,10 @@
 <h1>요청 주소 : /menu/insert (post)</h1>
 
 <p>
-<b>필요 데이터</b> <br><img src="/resources/controllerImage/menuInsert/data_format.PNG"><br><br>
-<b>리턴 값 정보</b><br><img src="/resources/controllerImage/menuInsert/info.PNG"><br><br>
-<b>성공</b> <br><img src="/resources/controllerImage/menuInsert/success.PNG"><br><br>
-<b>실패</b> <br><img src="/resources/controllerImage/menuInsert/fail.PNG">
+<b>필요 데이터</b> <br><img src="/DBSG/resources/controllerImage/menuInsert/data_format.PNG"><br><br>
+<b>리턴 값 정보</b><br><img src="/DBSG/resources/controllerImage/menuInsert/info.PNG"><br><br>
+<b>성공</b> <br><img src="/DBSG/resources/controllerImage/menuInsert/success.PNG"><br><br>
+<b>실패</b> <br><img src="/DBSG/resources/controllerImage/menuInsert/fail.PNG">
 </p>
 </body>
 </html>

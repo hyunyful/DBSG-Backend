@@ -7,26 +7,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 해당 sns와 이메일 계정이 이미 있는지 확인 -->
 	<select id="userCheck" parameterType="java.lang.String" resultType="UserDisplay">
 		select *
-		from user
+		from USER
 		where user_email = #{user_email} and user_delete is null
 	</select>
 
 	<!-- 해당 계정의 정보가 없는 경우 insert -->
 	<insert id="userJoin" parameterType="User">
-		insert into user(user_email, user_age, user_gender, user_birthday, user_image, user_type,user_nickname)
+		insert into USER(user_email, user_age, user_gender, user_birthday, user_image, user_type,user_nickname)
 		values(#{user_email},#{user_age},#{user_gender},#{user_birthday},#{user_image},#{user_type},"")
 	</insert>
 	
 	<!-- 닉네임 중복검사 -->
 	<select id="nicknameCheck" parameterType="java.lang.String" resultType="java.lang.String">
 		select user_nickname
-		from user
+		from USER
 		where user_nickname = #{user_nickname}
 	</select>
 	
 	<!-- 가입한 계정의 닉네임 설정 -->
 	<update id="setNickname" parameterType="User">
-		update user
+		update USER
 		set user_nickname = #{user_nickname}
 		where user_no = #{user_no}
 	</update>
@@ -34,20 +34,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 회원 번호로 회원정보 불러오기 -->
 	<select id="findInfoByNo" parameterType="java.lang.Integer" resultType="UserDisplay">
 		select user_no, user_nickname, user_image, user_level
-		from user
+		from USER
 		where user_no = #{user_no} and user_delete is null
 	</select>
 	
 	<!-- 회원 정보로 회원 번호 불러오기 -->
 	<select id="findNoByInfo" parameterType="java.lang.String" resultType="java.lang.Integer">
 		select user_no
-		from user
+		from USER
 		where user_email = #{user_email} and user_delete is null
 	</select>
 	
 	<!-- 회원탈퇴 시 user_delete 변경 -->
 	<update id="dropUser" parameterType="java.lang.String">
-		update user
+		update USER
 		set user_delete = now()
 		where user_nickname = #{user_nickname}
 	</update>

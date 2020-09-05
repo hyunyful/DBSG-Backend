@@ -21,9 +21,9 @@ public class MenuDao {
 		return sqlSession.insert("menu.menuInsert", menu);
 	}
 	
-	//메뉴 이름으로 메뉴 번호 찾기
-	public Integer findNobyName(String menu_name) {
-		return sqlSession.selectOne("menu.findNoByName", menu_name);
+	//방금 insert된 primary key 찾기
+	public Integer findNo() {
+		return sqlSession.selectOne("menu.findNo");
 	}
 	
 	//메뉴 스탯 테이블 등록

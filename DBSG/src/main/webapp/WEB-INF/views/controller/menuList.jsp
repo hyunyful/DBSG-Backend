@@ -11,9 +11,9 @@
 <h1>요청 주소 : /menu/list (get)</h1>
 
 <p>
-<b>리턴 값 정보</b><br><img src="/resources/controllerImage/menuList/info.PNG">
+<b>리턴 값 정보</b><br><img src="/DBSG/resources/controllerImage/menuList/info.PNG">
 <br><br>
-<b>성공</b><br><img src="/resources/controllerImage/menuList/success.PNG">
+<b>성공</b><br><img src="/DBSG/resources/controllerImage/menuList/success.PNG">
 </p>
 
 </body>

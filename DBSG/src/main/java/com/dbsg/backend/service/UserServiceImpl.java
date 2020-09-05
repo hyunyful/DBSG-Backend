@@ -35,12 +35,11 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private DataSourceTransactionManager tm;
 
-	//카카오 로그인 접근 토큰 받기
+	//카카오 로그인 
 	@Override
 	public Map<String,Object> kakaoLogin(String code) {
 		Map<String,Object> map = new HashMap<>();
 		
-		String accessToken = "";		//모든 작업이 성공적으로 수행된 경우 리턴
 		String error = "";					//중간에 작업이 실패하는 경우 리턴
 		
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition(); 
@@ -64,8 +63,8 @@ public class UserServiceImpl implements UserService {
 			//파라미터로는 grant_type, client_id, redirect_uri, code 를 전송
 			//grant_type은 authorization_code로 고정, client_id와 redirect_uri는 변경 가능하므로 변수로 설정, code는 매개변수
 			String client_id = "51c7c8f63345a28a25a4b28fff7048ef";
-			//String redirect_uri = "http://localhost:8080/user/login/kakao";
-			String redirect_uri = "http://15.165.215.38:8080/DBSG/user/login/kakao";
+			String redirect_uri = "http://localhost:8080/DBSG/user/login/kakao";
+			//String redirect_uri = "http://15.165.215.38:8080/DBSG/user/login/kakao";
 			
 			//전체 파라미터 (전송용)
 			String parameter = "grant_type=authorization_code&client_id="+client_id;
@@ -78,7 +77,7 @@ public class UserServiceImpl implements UserService {
 			
 			//결과 코드가 200이면 성공
 			int resultCode = con.getResponseCode();
-			
+	
 			//성공이면
 			if(resultCode == 200) {
 				BufferedReader input = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -106,15 +105,13 @@ public class UserServiceImpl implements UserService {
 				output.close();
 				input.close();
 				
-				//System.out.println(result);
-				
 				//결과를 JSONObject로 파싱
 				JSONObject data = new JSONObject(result);
 				//access_token 값을 map에 담아서 리턴
-				accessToken = data.getString("access_token");
+				String accessToken = data.getString("access_token");
 				
 				//사용자 정보 받아오기
-				uri = "https://kapi.kakao.com/v2/user/me";		//변수 재활용
+				uri = "https://kapi.kakao.com/v2/user/me";		
 				
 				url = new URL(uri);
 				
@@ -299,19 +296,20 @@ public class UserServiceImpl implements UserService {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 			System.out.println("URL 만들기에 실패링");
-			error = e.getMessage();
+			//error = e.getMessage();
+			error = "URL 만들기에 실패링";
 			map.put("error", error);
 			return map;
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("URLConnection에 실패링");
-			error = e.getMessage();
+			//error = e.getMessage();
+			error = "URLConnection에 실패링";
 			map.put("error", error);
 			return map;
 		}
-		
 	}
-
+	
 	//닉네임 중복검사
 	@Override
 	public Map<String,Object> nicknameCheck(Map<String, Object> param) {
@@ -409,11 +407,11 @@ public class UserServiceImpl implements UserService {
 			
 			//정보 추출
 			//뭐 하나라도 없으면 return
-			if(data.has("nickname")) {
-				nickname = data.getString("nickname");
+			if(data.has("user_nickname")) {
+				nickname = data.getString("user_nickname");
 			}else {
 				map.put("setNickname", "fail");
-				map.put("error", "there is no nickname value");
+				map.put("error", "there is no user_nickname value");
 				return map;
 			}
 			
@@ -481,7 +479,7 @@ public class UserServiceImpl implements UserService {
 		return userInfo;
 	}
 
-	//네이버 로그인을 위한 토큰 생성
+	//네이버 로그인 랜덤 토큰 생성
 	@Override
 	public Map<String, Object> naverState() {
 		Map<String,Object> map = new HashMap<>();

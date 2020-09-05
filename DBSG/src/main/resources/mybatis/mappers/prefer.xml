@@ -6,9 +6,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<!-- 즐겨찾기 수가 가장 많은 3개 메뉴 불러오기 -->
 	<select id="preferRecommend" resultType="MenuDisplay">
-		select m1.menu_no,m1.menu_name,m1.menu_image,m1.menu_description,m1.menu_reqMaterial,m2.menu_star,
-		m1.menu_tag,m1.menu_totalTime,m1.user_nickname,m2.menu_preferCnt,m2.menu_readCnt
-		from menu m1,menu_stat m2
+		select 
+			m1.menu_no,
+			m1.menu_name,
+			m1.menu_image,
+			m1.menu_description,
+			m1.menu_reqMaterial,
+			m1.menu_needlessMaterial,
+			m2.menu_star,
+			m1.menu_tag,
+			m1.menu_totalTime,
+			m2.menu_preferCnt,
+			m2.menu_readCnt
+		from MENU m1,MENU_STAT m2
 		where m1.menu_no=m2.menu_no and m1.menu_delete=0
 		order by m2.menu_preferCnt desc
 		limit 3
@@ -19,32 +29,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 1.prefer 테이블에 로그 확인 -->
 	<select id="preferCheck" resultType="Prefer" parameterType="Prefer">
 		select *
-		from prefer
+		from PREFER
 		where user_no=#{user_no} and menu_no=#{menu_no}
 	</select>
 	
 	<!-- 2.로그 없으면 로그 등록 -->
 	<insert id="addPrefer" parameterType="Prefer">
-		insert into prefer(user_no, menu_no)
+		insert into PREFER(user_no, menu_no)
 		values(#{user_no},#{menu_no})
 	</insert>
 	
 	<!-- 3.menu_stat 테이블의 preferCnt 1 증가 -->
 	<update id="addPreferCnt" parameterType="java.lang.Integer">
-		update menu_stat
+		update MENU_STAT
 		set menu_preferCnt = menu_preferCnt+1
 		where menu_no = #{menu_no}
 	</update>
 	
 	<!-- 즐겨찾기 테이블에서 로그 삭제 -->
 	<delete id="deletePrefer" parameterType="Prefer">
-		delete from prefer
+		delete from PREFER
 		where user_no=#{user_no} and menu_no=#{menu_no}
 	</delete>
 	
 	<!-- menu_stat 테이블에서 preferCnt 감소 -->
 	<update id="deletePreferCnt" parameterType="java.lang.Integer">
-		update menu_stat
+		update MENU_STAT
 		set menu_preferCnt = menu_preferCnt-1
 		where menu_no=#{menu_no}
 	</update>

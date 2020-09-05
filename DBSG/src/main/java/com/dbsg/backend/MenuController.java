@@ -16,6 +16,8 @@ import com.dbsg.backend.service.MenuService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.Example;
 
 @RestController
 @RequestMapping("/menu")
@@ -26,6 +28,7 @@ public class MenuController {
 	
 	//메뉴,레시피 등록
 	@ApiOperation(value="메뉴/레시피 등록")
+	@ApiParam(example="{menu:{},recipe:[]}")
 	@PostMapping("/insert")
 	public Map<String,Object> menuInsert(@RequestBody Map<String,Object> param){
 		Map<String,Object> map = new HashMap<>();		//리턴될 map

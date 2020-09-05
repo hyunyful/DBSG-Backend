@@ -22,13 +22,12 @@
 <script>
 function kakao(){
 	var appKey = "51c7c8f63345a28a25a4b28fff7048ef";
-	var redirect_uri = "http://15.165.215.38:8080/DBSG/user/login/kakao";
-	//var redirect_uri = "http://localhost:8080/user/login/kakao";
+	//var redirect_uri = "http://15.165.215.38:8080/DBSG/user/login/kakao";
+	var redirect_uri = "http://localhost:8080/DBSG/user/login/kakao";		//로컬 테스트용
 	
 	var uri = "https://kauth.kakao.com/oauth/authorize?"
 	uri += "client_id="+appKey+"&redirect_uri="+redirect_uri+"&scope=profile,account_email,age_range,birthday,gender";
 	uri += "&response_type=code";
-	//uri += "&scope=profile,email,age_range,birthday,birthyear,gender,phone_number";
 	
 	//alert(uri);
 	
@@ -38,25 +37,21 @@ function kakao(){
 
 <script>
 function naver(){
-	//상태 토큰 생성 ajax
 	$.ajax({
 		url:"/DBSG/user/naverState",
 		type:"get",
 		success:function(result){
-			//console.log(result.state);
 			
 			var client_id = "m8QQGZXfACv5KdlFw8oI";
-			//var redirect_uri = "http://localhost:8080/user/login/naver";
-			var redirect_uri = "http://15.165.215.38:8080/DBSG/user/login/naver";
+			var redirect_uri = "http://localhost:8080/DBSG/user/login/naver";
+			//var redirect_uri = "http://15.165.215.38:8080/DBSG/user/login/naver";
 			var state = result.state;
 			
 			//https://nid.naver.com/oauth2.0/authorize?client_id={클라이언트 아이디}&response_type=code&redirect_uri={개발자 센터에 등록한 콜백 URL(URL 인코딩)}&state={상태 토큰}
 			var uri = "https://nid.naver.com/oauth2.0/authorize?";
 			uri += "client_id="+client_id+"&response_type=code&redirect_uri="+redirect_uri;
 			uri += "&state="+state;
-			
-			//console.log(uri);
-			//alert(state);
+
 			location.href=uri;
 			
 		}

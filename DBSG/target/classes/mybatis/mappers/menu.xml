@@ -7,36 +7,78 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 메뉴 등록 -->
 	<!-- MENU 테이블 -->
 	<insert id="menuInsert" parameterType="Menu">
-		insert into menu(menu_name,user_nickname,menu_tag,menu_reqMaterial,menu_needlessMaterial,
-		menu_description,menu_kids,menu_image,menu_totalTime)
-		values(#{menu_name},#{user_nickname},#{menu_tag},#{menu_reqMaterial},
-		#{menu_needlessMaterial},#{menu_description},#{menu_kids},#{menu_image},#{menu_totalTime})
+		insert into MENU(
+			menu_name,
+			user_no,
+			menu_tag,
+			menu_reqMaterial,
+			menu_needlessMaterial,
+			menu_description,
+			menu_kids,
+			menu_image,
+			menu_totalTime
+		)
+		values(
+			#{menu_name},
+			#{user_no},
+			#{menu_tag},
+			#{menu_reqMaterial},
+			#{menu_needlessMaterial},
+			#{menu_description},
+			#{menu_kids},
+			#{menu_image},
+			#{menu_totalTime}
+		)
 	</insert>
 	
 	<!-- menu_no 찾아오기 -->
-	<select id="findNoByName" parameterType="java.lang.String" resultType="java.lang.Integer">
-		select menu_no
-		from menu
-		where menu_name=#{menu_name}
+	<select id="findNo" resultType="java.lang.Integer">
+		select last_insert_id()
 	</select>
 	
 	<!-- 메뉴 스탯 테이블에 메뉴 번호 등록 -->
 	<insert id="menuStatInsert" parameterType="java.lang.Integer">
-		insert into menu_stat(menu_no) values(#{menu_no})
+		insert into MENU_STAT(menu_no) 
+		values(#{menu_no})
 	</insert>
 
 	<!-- 레시피 등록 -->
 	<insert id="recipeInsert" parameterType="Recipe">
-		insert into recipe(menu_no,recipe_processNo,recipe_action,recipe_fire,recipe_reqTime,recipe_image)
-		values(#{menu_no},#{recipe_processNo},#{recipe_action},#{recipe_fire},#{recipe_reqTime},#{recipe_image})
+		insert into RECIPE(
+			menu_no,
+			recipe_processNo,
+			recipe_action,
+			recipe_fire,
+			recipe_reqTime,
+			recipe_image
+		)
+		values(
+			#{menu_no},
+			#{recipe_processNo},
+			#{recipe_action},
+			#{recipe_fire},
+			#{recipe_reqTime},
+			#{recipe_image}
+		)
 	</insert>
 	
 	<!-- 전체 메뉴 조회 -->
 	<!-- 메뉴 번호, 메뉴 이름, 메뉴 이미지, 메뉴 설명, 필요 재료, 메뉴 평점, 메뉴 태그, 예상 조리시간, 작성자, 즐찾수, 조회수 -->
 	<select id="menuList" resultType="MenuDisplay">
-		select m1.menu_no,m1.menu_name,m1.menu_image,m1.menu_description,m1.menu_reqMaterial,m2.menu_star,
-		m1.menu_tag,m1.menu_totalTime,m1.user_nickname,m2.menu_preferCnt,m2.menu_readCnt, m1.menu_needlessMaterial
-		from menu m1,menu_stat m2
+		select 
+			m1.menu_no,
+			m1.menu_name,
+			m1.menu_image,
+			m1.menu_description,
+			m1.menu_reqMaterial,
+			m2.menu_star,
+			m1.menu_kids,
+			m1.menu_tag,
+			m1.menu_totalTime,
+			m2.menu_preferCnt,
+			m2.menu_readCnt, 
+			m1.menu_needlessMaterial
+		from MENU m1,MENU_STAT m2
 		where m1.menu_no=m2.menu_no and m1.menu_delete=0
 	</select>
 	
@@ -44,40 +86,74 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 문자열로 메뉴 번호 찾기 -->
 	<select id="searchMenuNoByString" resultType="java.lang.Integer" parameterType="java.lang.String">
 		select distinct menu_no
-		from menu
-		where menu_name like #{keyword} or menu_description like #{keyword} or menu_reqMaterial like #{keyword}
+		from MENU
+		where (
+			menu_name like #{keyword} or menu_description like #{keyword} or menu_reqMaterial like #{keyword}
+		) and menu_delete=0
 	</select>
 	
 	<!-- 메뉴 번호로 해당 메뉴 정보 찾기 -->
 	<select id="searchMenuInfoByNo" parameterType="java.lang.Integer" resultType="MenuDisplay">
-		select m1.menu_no,m1.menu_name,m1.menu_image,m1.menu_description,m1.menu_reqMaterial,
-		m2.menu_star, m1.menu_tag,m1.menu_totalTime,m1.user_nickname,m2.menu_preferCnt,m2.menu_readCnt,
-		m1.menu_needlessMaterial
-		from menu m1,menu_stat m2
-		where m1.menu_no=m2.menu_no and m1.menu_delete=0 and m1.menu_no = #{menu_no}
+		select 
+			m1.menu_no,
+			m1.menu_name,
+			m1.menu_image,
+			m1.menu_description,
+			m1.menu_reqMaterial,
+			m2.menu_star, 
+			m1.menu_kids,
+			m1.menu_tag,
+			m1.menu_totalTime,
+			m2.menu_preferCnt,
+			m2.menu_readCnt,
+			m1.menu_needlessMaterial
+		from MENU m1,MENU_STAT m2
+		where m1.menu_no=m2.menu_no and m1.menu_no = #{menu_no}
 	</select>
 	
 	<!-- 태그로 메뉴 조회 -->
 	<select id="searchMenuByTag" parameterType="java.lang.String" resultType="MenuDisplay">
-		select m1.menu_no,m1.menu_name,m1.menu_image,m1.menu_description,m1.menu_reqMaterial,m2.menu_star,
-		m1.menu_tag,m1.menu_totalTime,m1.user_nickname,m2.menu_preferCnt,m2.menu_readCnt
-		from menu m1,menu_stat m2
-		where m1.menu_no=m2.menu_no and m1.menu_delete=0 and m1.menu_tag like #{tag}
+		select 
+			m1.menu_no,
+			m1.menu_name,
+			m1.menu_image,
+			m1.menu_description,
+			m1.menu_reqMaterial,
+			m1.menu_needlessMaterial,
+			m2.menu_star,
+			m1.menu_kids,
+			m1.menu_tag,
+			m1.menu_totalTime,
+			m2.menu_preferCnt,
+			m2.menu_readCnt
+		from MENU m1,MENU_STAT m2
+		where m1.menu_no=m2.menu_no 
+			and m1.menu_delete=0 
+			and m1.menu_tag like #{tag}
 	</select>
 	
 	<!-- 레시피 볼 때 해당 메뉴의 조회수 1 증가 -->
 	<update id="readCnt" parameterType="java.lang.Integer">
-		update menu_stat
+		update MENU_STAT
 		set menu_readCnt = menu_readCnt+1
 		where menu_no = #{menu_no}
 	</update>
 	
 	<!-- 조회수로 메뉴 추천 -->
 	<select id="menuRecommendByreadCnt" resultType="MenuDisplay">
-		select m1.menu_no,m1.menu_name,m1.menu_image,m1.menu_description,m1.menu_reqMaterial,
-		m2.menu_star, m1.menu_tag,m1.menu_totalTime,m1.user_nickname,m2.menu_preferCnt,m2.menu_readCnt,
+		select 
+			m1.menu_no,
+			m1.menu_name,
+			m1.menu_image,
+			m1.menu_description,
+			m1.menu_reqMaterial,
+			m2.menu_star, 
+			m1.menu_tag,
+			m1.menu_totalTime,
+			m2.menu_preferCnt,
+			m2.menu_readCnt,
 		m1.menu_needlessMaterial
-		from menu m1,menu_stat m2
+		from MENU m1,MENU_STAT m2
 		where m1.menu_no=m2.menu_no and m1.menu_delete=0
 		order by m2.menu_readCnt desc
 		limit 3
@@ -85,7 +161,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- menu 테이블에서 해당 메뉴 번호 삭제 -->
 	<delete id="deleteMenu" parameterType="java.lang.Integer">
-		delete from menu
+		update MENU
+		set menu_delete=1
 		where menu_no = #{menu_no}
 	</delete>
 

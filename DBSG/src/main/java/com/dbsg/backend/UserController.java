@@ -18,6 +18,8 @@ import com.dbsg.backend.domain.User;
 import com.dbsg.backend.domain.UserDisplay;
 import com.dbsg.backend.service.UserService;
 
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -27,12 +29,13 @@ public class UserController {
 	
 	String myState = "";		//네이버 로그인할 때 상태토큰
 
-	//카카오 로그인 redirect_uri
-	//인증 코드 받기
+	//카카오 로그인
+	@ApiOperation(value="카카오 로그인")
 	@GetMapping("/login/kakao")
 	public Map<String,Object> kakaoLogin(@RequestParam("code") String code){
 		Map<String,Object> map = new HashMap<>();				//결과로 리턴될 map
 		
+		//접근 토큰 받아오기
 		map = userService.kakaoLogin(code);
 		
 		map.put("con", "success");
@@ -40,6 +43,7 @@ public class UserController {
 		return map;
 	}
 	
+	@ApiOperation(value="네이버 상태토큰 받기")
 	@GetMapping("/naverState")
 	public Map<String,Object> naverLoginState(){
 		Map<String,Object> map = new HashMap<>();
@@ -53,13 +57,10 @@ public class UserController {
 		return map;
 	}
 	
+	@ApiOperation(value="네이버 로그인")
 	@GetMapping("/login/naver")
 	public Map<String,Object> naverLogin(@RequestParam("state") String state, @RequestParam("code") String code){
 		Map<String,Object> map = new HashMap<>();
-		
-		//System.out.println("myState는 "+myState);
-		//System.out.println("state는 "+state);
-		//System.out.println("code는 "+code);
 		
 		//상태토큰을 먼저 검증하고 접근토큰 생성
 		if(myState.equals(state)) {		//일치하면
@@ -76,6 +77,7 @@ public class UserController {
 	}
 	
 	//닉네임 중복검사
+	@ApiOperation(value="닉네임 중복검사")
 	@PostMapping("/nicknameCheck")
 	public Map<String,Object> nicknameCheck(@RequestBody Map<String,Object> param){
 		Map<String,Object> map = new HashMap<>();
@@ -89,6 +91,7 @@ public class UserController {
 	}
 	
 	//닉네임 설정 요청
+	@ApiOperation(value="닉네임 설정")
 	@PostMapping("/nickname")
 	public Map<String,Object> setNickname(@RequestBody Map<String,Object> param){
 		Map<String,Object> map = new HashMap<>();

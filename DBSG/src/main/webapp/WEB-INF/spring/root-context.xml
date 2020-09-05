@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
 	
@@ -10,13 +12,13 @@
 	 <!-- MySQL dataSource -->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> 
         <!-- 사용할 데이터베이스 종류 -->
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/> 
+        <property name="driverClassName" value="${spring.datasource.driverClassName}"/> 
         <!-- 접속할 데이터베이스 경로 -->
         <property name="url" 
-        	value="jdbc:mysql://15.165.215.38:3306/dbsg?useSSL=false&amp;serverTimezone=Asia/Seoul&amp;characterEncoding=utf-8"/>
+        	value="${spring.datasource.url}"/>
         <!-- 접속할 계정 이름과 비밀번호 -->
-        <property name="username" value="dbsg"/> 
-        <property name="password" value="Dbsg1234@"/>
+        <property name="username" value="${spring.datasource.username}"/> 
+        <property name="password" value="${spring.datasource.password}"/>
     </bean>
 	
 	<!-- 설정 정보 갖는 애 -->
@@ -34,4 +36,7 @@
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
+	
+	 <!-- config파일 자동 로드 location="classpath:database.properties"  /!-->
+    <context:property-placeholder location="resources/config/DBconfig.properties" /> 
 </beans>

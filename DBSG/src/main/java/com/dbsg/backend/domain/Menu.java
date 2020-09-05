@@ -4,7 +4,7 @@ public class Menu {
  
 	 private int menu_no;
 	 private String menu_name;
-	 private String user_nickname;
+	 private int user_no;
 	 private String menu_tag;
 	 private String menu_reqMaterial;
 	 private String menu_needlessMaterial;
@@ -30,11 +30,12 @@ public class Menu {
 	public void setMenu_name(String menu_name) {
 		this.menu_name = menu_name;
 	}
-	public String getUser_nickname() {
-		return user_nickname;
+
+	public int getUser_no() {
+		return user_no;
 	}
-	public void setUser_nickname(String user_nickname) {
-		this.user_nickname = user_nickname;
+	public void setUser_no(int user_no) {
+		this.user_no = user_no;
 	}
 	public String getMenu_tag() {
 		return menu_tag;
@@ -114,8 +115,8 @@ public class Menu {
 	
 	@Override
 	public String toString() {
-		return "Menu [menu_no=" + menu_no + ", menu_name=" + menu_name + ", user_nickname=" + user_nickname
-				+ ", menu_tag=" + menu_tag + ", menu_reqMaterial=" + menu_reqMaterial + ", menu_needlessMaterial="
+		return "Menu [menu_no=" + menu_no + ", menu_name=" + menu_name + ", user_no=" + user_no + ", menu_tag="
+				+ menu_tag + ", menu_reqMaterial=" + menu_reqMaterial + ", menu_needlessMaterial="
 				+ menu_needlessMaterial + ", menu_description=" + menu_description + ", menu_image=" + menu_image
 				+ ", menu_kids=" + menu_kids + ", menu_totalTime=" + menu_totalTime + ", menu_delete=" + menu_delete
 				+ ", menu_star=" + menu_star + ", menu_preferCnt=" + menu_preferCnt + ", menu_readCnt=" + menu_readCnt

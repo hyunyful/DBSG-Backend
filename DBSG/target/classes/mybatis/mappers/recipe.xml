@@ -7,13 +7,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 해당 메뉴의 전체 레시피 보기 -->
 	<select id="showRecipe" parameterType="java.lang.Integer" resultType="Recipe">
 		select *
-		from recipe
+		from RECIPE
 		where menu_no = #{menu_no}
 	</select>
 
 	<!-- 해당 메뉴의 레시피 삭제 -->
 	<delete id="deleteRecipe" parameterType="java.lang.Integer">
-		delete from recipe
+		delete from RECIPE
 		where menu_no=#{menu_no}
 	</delete>
 </mapper>

@@ -1,5 +1,6 @@
 package com.dbsg.backend.service;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -78,6 +79,7 @@ public class MenuServiceImpl implements MenuService {
 			//1.MENU 테이블에 메뉴 정보 등록
 			//1-1.menuJson에서 메뉴에 대한 정보 추출
 			String menu_name = "";								//메뉴 이름
+			int user_no = 0;											//메뉴 등록회원 번호 
 			String menu_tag = "";									//메뉴 태그
 			String menu_reqMaterial = "";						//필수 재료
 			String menu_needlessMaterial = "";				//선택 재료
@@ -92,6 +94,12 @@ public class MenuServiceImpl implements MenuService {
 				map.put("menuInsert", "fail");
 				map.put("error", "there is no menu_name");
 				return map;
+			}
+			
+			if(menuJson.has("user_no")) {
+				user_no = menuJson.getInt("user_no");
+			}else {
+				user_no = 3;
 			}
 			
 			if(menuJson.has("menu_tag")) {
@@ -134,13 +142,10 @@ public class MenuServiceImpl implements MenuService {
 				return map;
 			}
 			
-			//고정값
-			String user_nickname = "admin";
-			
 			//1-2.MENU 객체에 정보 등록
 			Menu menu = new Menu();
 			menu.setMenu_name(menu_name);
-			menu.setUser_nickname(user_nickname);
+			menu.setUser_no(user_no);
 			menu.setMenu_tag(menu_tag);
 			menu.setMenu_reqMaterial(menu_reqMaterial);
 			menu.setMenu_needlessMaterial(menu_needlessMaterial);
@@ -156,13 +161,13 @@ public class MenuServiceImpl implements MenuService {
 			
 			//메뉴 정보를 menu 테이블 삽입에 성공하면
 			if(result1 > 0) {
-				//2.MENU_Stat 테이블에 메뉴 번호 등록
+				//2.MENU_Stat 테이블에 방금 insert된 메뉴 번호 등록
 				
-				//2-1.menu_no 찾아오기
-				Integer menu_no = menuDao.findNobyName(menu_name);
+				//2-1.방금 insert된 menu_no 찾아오기
+				int menu_no = menuDao.findNo();
 				
 				//menu_no이 없으면
-				if(menu_no == null) {
+				if(menu_no <= 0) {
 					map.put("menuInsert", "fail");
 					map.put("error", "menu_no 찾아오는데 실패");
 					tm.rollback(status); 
@@ -269,12 +274,13 @@ public class MenuServiceImpl implements MenuService {
 				return map;
 			}
 			
-		}catch(Exception e) {
+		}catch(
+				Exception e) {
 			e.printStackTrace(); 
 			map.put("menuInsert", "fail");
 			map.put("error", e.getMessage());
 			tm.rollback(status); 
-			throw e; 
+			//throw e; 
 		}
 		
 		//System.out.println("commit 하고 돌아갑시다");
@@ -345,7 +351,7 @@ public class MenuServiceImpl implements MenuService {
 					
 					//번호로 메뉴 정보 찾아오기
 					MenuDisplay temp = menuDao.searchMenuInfoByNo(menuNo);
-				
+					
 					//찾아외서 list에 추가
 					list.add(temp);
 				}
@@ -361,7 +367,7 @@ public class MenuServiceImpl implements MenuService {
 			throw e; 
 		}
 		
-		map.put("menuList", "success");
+		map.put("menuSearch", "success");
 		map.put("data", list);
 		map.put("size", list.size());
 		

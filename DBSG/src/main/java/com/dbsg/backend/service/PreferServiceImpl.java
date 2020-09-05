@@ -70,7 +70,7 @@ public class PreferServiceImpl implements PreferService {
 			if(p != null) {
 				//있다고 보내주기
 				map.put("addPrefer", "fail");
-				map.put("error", "exist");
+				map.put("error", "exist data");
 				tm.rollback(status);
 				return map;
 			}else {		//해당 유저가 해당 메뉴를 즐겨찾기 한 적이 없으면
@@ -136,7 +136,7 @@ public class PreferServiceImpl implements PreferService {
 			//만약 로그가 없으면
 			if(p == null) {
 				map.put("deletePrefer", "fail");
-				map.put("error", "즐겨찾기를 한적도 없네요");
+				map.put("error", "no data");
 				tm.rollback(status);
 				return map;
 			}else {		//로그가 있으면
