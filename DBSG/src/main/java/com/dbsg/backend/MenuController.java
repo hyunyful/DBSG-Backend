@@ -48,7 +48,6 @@ public class MenuController {
 		map = menuService.menuList();
 		
 		map.put("con", "success");
-		map.put("test", "test");
 
 		return map;
 	}
