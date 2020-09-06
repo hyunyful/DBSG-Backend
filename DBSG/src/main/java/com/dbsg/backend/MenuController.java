@@ -17,7 +17,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Example;
 
 @RestController
 @RequestMapping("/menu")
@@ -49,6 +48,7 @@ public class MenuController {
 		map = menuService.menuList();
 		
 		map.put("con", "success");
+		map.put("test", "test");
 
 		return map;
 	}

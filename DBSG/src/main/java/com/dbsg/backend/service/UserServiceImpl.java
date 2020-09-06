@@ -12,8 +12,6 @@ import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -63,8 +61,8 @@ public class UserServiceImpl implements UserService {
 			//파라미터로는 grant_type, client_id, redirect_uri, code 를 전송
 			//grant_type은 authorization_code로 고정, client_id와 redirect_uri는 변경 가능하므로 변수로 설정, code는 매개변수
 			String client_id = "51c7c8f63345a28a25a4b28fff7048ef";
-			String redirect_uri = "http://localhost:8080/DBSG/user/login/kakao";
-			//String redirect_uri = "http://15.165.215.38:8080/DBSG/user/login/kakao";
+			//String redirect_uri = "http://localhost:8080/DBSG/user/login/kakao";
+			String redirect_uri = "http://15.165.215.38:8080/DBSG/user/login/kakao";
 			
 			//전체 파라미터 (전송용)
 			String parameter = "grant_type=authorization_code&client_id="+client_id;
@@ -130,7 +128,6 @@ public class UserServiceImpl implements UserService {
 				if(resultCode == 200) {
 					input = new BufferedReader(new InputStreamReader(con.getInputStream()));
 					
-					//재활용 변수 초기화
 					line = "";
 					result = "";
 					
@@ -150,8 +147,6 @@ public class UserServiceImpl implements UserService {
 					
 					//stream 닫기
 					input.close();
-					
-					//System.out.println("result는 "+result);
 					
 					//읽은 결과 JSONObject로 파싱
 					data = new JSONObject(result);
@@ -270,14 +265,14 @@ public class UserServiceImpl implements UserService {
 							result = "error";
 							tm.rollback(status); 
 							map.put("result", result);
-							map.put("error", "회원가입에 실패");
+							map.put("error", "fail to join");
 							return map;
 						}
 					}
 					
 					
 				}else {		//사용자 정보 불러오기의 resultCode가 200이 아니면
-					error = "통신 실패링2";
+					error = "cannot read user infro from kakao";
 					map.put("resultCode", resultCode);
 					map.put("error", error);
 					return map;
@@ -286,7 +281,7 @@ public class UserServiceImpl implements UserService {
 			}
 			//실패하면 (첫번째 resultCode가 200이 아니면)
 			else {
-				error = "통신 실패링1";
+				error = "fail to kakao login";
 				map.put("resultCode", resultCode);
 				map.put("error", error);
 				return map;
@@ -295,17 +290,11 @@ public class UserServiceImpl implements UserService {
 			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
-			System.out.println("URL 만들기에 실패링");
-			//error = e.getMessage();
-			error = "URL 만들기에 실패링";
-			map.put("error", error);
+			map.put("error", e.getMessage());
 			return map;
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("URLConnection에 실패링");
-			//error = e.getMessage();
-			error = "URLConnection에 실패링";
-			map.put("error", error);
+			map.put("error", e.getMessage());
 			return map;
 		}
 	}
@@ -433,8 +422,6 @@ public class UserServiceImpl implements UserService {
 			//닉네임 설정에 성공하면
 			if(result > 0) {
 				
-				//System.out.println("성공쓰");
-				
 				//회원번호로 해당 회원 정보 불러오기
 				UserDisplay ud = userDao.findInfoByNo(user_no);
 				
@@ -445,7 +432,6 @@ public class UserServiceImpl implements UserService {
 				}
 				//회원이 없으면
 				else {
-					//System.out.println("회원없쓰");
 					map.put("setNickname", "fail");
 					map.put("error", "there is no user..!");
 				}
@@ -453,7 +439,6 @@ public class UserServiceImpl implements UserService {
 			}
 			//닉네임 설정에 실패하면
 			else {
-				//System.out.println("실패쓰");
 				map.put("setNickname", "fail");
 				map.put("error", "setNickname fail");
 			}
@@ -543,8 +528,6 @@ public class UserServiceImpl implements UserService {
 				
 				input.close();
 				
-				//System.out.println(result);
-				
 				//JSON으로 파싱
 				JSONObject data = new JSONObject(result);
 				
@@ -570,7 +553,7 @@ public class UserServiceImpl implements UserService {
 					input = new BufferedReader(new InputStreamReader(con2.getInputStream()));
 					
 					line = "";
-					result = "";		//두개 변수 초기화
+					result = "";	
 					
 					while(true) {
 						line = input.readLine();
@@ -583,8 +566,6 @@ public class UserServiceImpl implements UserService {
 					}
 					
 					input.close();
-					
-					//System.out.println(result);
 					
 					//JSON 파싱
 					data = new JSONObject(result);
@@ -639,8 +620,6 @@ public class UserServiceImpl implements UserService {
 						user.setUser_image(profile_image);
 						user.setUser_type("naver");
 						
-						//System.out.println(user.toString());
-						
 						//email로 해당 유저가 이미 DB에 있는지 확인
 						UserDisplay ud = userDao.userCheck(email);
 						
@@ -694,15 +673,13 @@ public class UserServiceImpl implements UserService {
 			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
-			System.out.println("URL 만드는데 실패");
 			map.put("naverLogin", "fail");
-			map.put("error", "URL Make Error1");
+			map.put("error", e.getMessage());
 			return map;
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("URL Connection 실패");
 			map.put("naverLogin", "fail");
-			map.put("error", "URL Connection Error1");
+			map.put("error", e.getMessage());
 			return map;
 		}
 		
