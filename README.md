@@ -391,7 +391,7 @@ user_type varchar(10) not null comment '회원가입한 sns',
 user_level int default 1 comment '회원 레벨, 관리자 0',    
 user_delete date comment '회원삭제 여부, 기본 null, 삭제된 일자로부토 3개월 후 회원데이터 삭제',    
 etc text comment '여분컬럼',    
-primary key(user_no,user_nickname)    
+primary key(user_no)    
 )default character set=utf8;    
 </code>
 </pre>
@@ -401,7 +401,7 @@ primary key(user_no,user_nickname)
 <code>
 create table menu(
 menu_no bigint auto_increment comment '메뉴번호',
-menu_name varchar(100) comment '메뉴이름',
+menu_name varchar(100) not null comment '메뉴이름',
 user_nickname varchar(30) comment '메뉴등록자',
 menu_tag text not null comment '메뉴태그번호',
 menu_reqMaterial text comment '필수재료',
@@ -412,7 +412,7 @@ menu_kids varchar(1) default 'N' comment '아기섭취 가능여부',
 menu_totalTime int default 0 comment '총 소요 시간',
 menu_delete int default 0 comment '메뉴 삭제 여부, 1이면 삭제된 메뉴',
 etc text comment '여분 컬럼',
-primary key(menu_no,menu_name)
+primary key(menu_no)
 )default character set=utf8;
 </code>
 </pre>
